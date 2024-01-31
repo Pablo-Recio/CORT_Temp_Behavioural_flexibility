@@ -178,17 +178,17 @@ plotting <- function(df){
   geom_ribbon(aes(ymin = Mean_Predicted_prob - SE_Predicted_prob, ymax = Mean_Predicted_prob + SE_Predicted_prob, fill = Treatment), color = NA, alpha = 0.075) + 
   scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#616161")) +
   theme_classic() +
-  facet_grid2(Species, scale = "free_x", space = "free_x", axes = "all") +
-  theme(strip.placement = "outside") +  
+  facet_wrap(Species ~ ., scale = "free_x", ncol= 1, strip.position = "right") +
+  theme(strip.placement = "outside") +
   theme(strip.background = element_blank()) +
   labs(y = "Predicted probability of correct choice", x = "Trial") +
-  theme(plot.margin = margin(5.5, 5.5, 5.5, 5.5, "mm")) + 
+  theme(plot.margin = margin(5.5, 5.5, 5.5, 5.5, "mm")) +
   theme(
-    axis.title = element_text(size = 15, family = "Times New Roman"),
-    axis.text = element_text(size = 10, family = "Times New Roman"),
-    legend.title = element_text(size = 12, family = "Times New Roman"),
-    legend.text = element_text(size = 10, family = "Times New Roman"),
-    strip.text = element_text(size = 13, family = "Times New Roman")
+    axis.title = element_text(size = 15, family = "Times"),
+    axis.text = element_text(size = 10, family = "Times"),
+    legend.title = element_text(size = 12, family = "Times"),
+    legend.text = element_text(size = 10, family = "Times"),
+    strip.text = element_text(size = 14, family = "Times", face = "italic")
   )  
   return(plot)
 }

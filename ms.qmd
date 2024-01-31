@@ -188,7 +188,40 @@ real_table <- flextable(new_table_df) %>%
 real_table
 ```
 
-We did not find any significant differences between treatments in _L. delicata_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean(deli_ControlCold - deli_CORTCold), 3)`, p- value = `r format_dec(pmcmc(deli_ControlCold - deli_CORTCold), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean(deli_ControlHot - deli_CORTHot), 3)`, p- value = `r format_dec(pmcmc(deli_ControlHot - deli_CORTHot), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean(deli_ControlHot - deli_ControlCold), 3)`, p-value = `r format_dec(pmcmc(deli_ControlHot - deli_ControlCold), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean(deli_CORTHot - deli_CORTCold), 3)`, p-value = `r format_dec(pmcmc(deli_CORTHot - deli_CORTCold), 3)`) (see @fig-results) or _L. guichenoti_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean(guich_ControlCold - guich_CORTCold), 3)`, p- value = `r format_dec(pmcmc(guich_ControlCold - guich_CORTCold), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean(guich_ControlHot - guich_CORTHot), 3)`, p- value = `r format_dec(pmcmc(guich_ControlHot - guich_CORTHot), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean(guich_ControlHot - guich_ControlCold), 3)`, p-value = `r format_dec(pmcmc(guich_ControlHot - guich_ControlCold), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean(guich_CORTHot - guich_CORTCold), 3)`, p-value = `r format_dec(pmcmc(guich_CORTHot - guich_CORTCold), 3)`) (see @fig-results). We did not find any effect of incubation temperature (_L. delicata_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p-value = `r format_dec(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`; _L. guichenoti_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p-value = `r format_dec(pmcmc((guich_CORTHot + guich_ControlHot) -(guich_CORTCold + guich_ControlCold)),3)`) or the hormone (_L. delicata_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`;_L. guichenoti_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((guich_ControlCold + guich_ControlHot)-(guich_CORTCold + guich_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((guich_ControlCold + guich_ControlHot)-(guich_CORTCold + guich_CORTHot)), 3)`) when groups were pooled. Finally, we did not find any significant differences when we compared the estimated slopes between species for the reversal task (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p-value = `r format_dec(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`). 
+We did not find any significant differences between treatments in _L. delicata_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean(deli_ControlCold - deli_CORTCold), 3)`, p- value = `r format_dec(pmcmc(deli_ControlCold - deli_CORTCold), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean(deli_ControlHot - deli_CORTHot), 3)`, p- value = `r format_dec(pmcmc(deli_ControlHot - deli_CORTHot), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean(deli_ControlHot - deli_ControlCold), 3)`, p-value = `r format_dec(pmcmc(deli_ControlHot - deli_ControlCold), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean(deli_CORTHot - deli_CORTCold), 3)`, p-value = `r format_dec(pmcmc(deli_CORTHot - deli_CORTCold), 3)`) (see @fig-results) or _L. guichenoti_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean(guich_ControlCold - guich_CORTCold), 3)`, p- value = `r format_dec(pmcmc(guich_ControlCold - guich_CORTCold), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean(guich_ControlHot - guich_CORTHot), 3)`, p- value = `r format_dec(pmcmc(guich_ControlHot - guich_CORTHot), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean(guich_ControlHot - guich_ControlCold), 3)`, p-value = `r format_dec(pmcmc(guich_ControlHot - guich_ControlCold), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean(guich_CORTHot - guich_CORTCold), 3)`, p-value = `r format_dec(pmcmc(guich_CORTHot - guich_CORTCold), 3)`) (see @fig-results). When pooled together, we did not find any effect of incubation temperature (_L. delicata_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p-value = `r format_dec(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`; _L. guichenoti_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p-value = `r format_dec(pmcmc((guich_CORTHot + guich_ControlHot) -(guich_CORTCold + guich_ControlCold)),3)`) or the hormone (_L. delicata_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`;_L. guichenoti_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((guich_ControlCold + guich_ControlHot)-(guich_CORTCold + guich_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((guich_ControlCold + guich_ControlHot)-(guich_CORTCold + guich_CORTHot)), 3)`) when groups were pooled. Finally, we did not find any significant differences when we compared the estimated slopes between species for the reversal task (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p-value = `r format_dec(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`). 
+
+```{r, fig-results}
+#| label: fig-results
+#| fig.cap: "Predicted probability of choosing the correct feeder first over trials. The lines represent the mean predicted probability of choosing the correct feeder first, and the shaded areas represent the standard deviation of the mean; both obtained by using the slope and intercept estimates from the posterior distributions. The different colours represent the different treatments."
+source(here("R", "func.R"))
+# First step, create the dfs for all models
+## 1) L. delicata
+df_deli <- df_fig(as.data.frame(deli), "L. delicata")
+## 2) L. guichenoti
+df_guich <- df_fig(as.data.frame(guich), "L. guichenoti")
+#
+# Second step, merge the df into a big Fig_df
+Fig_df <- rbind(df_deli, df_guich) %>%
+  mutate(Trial = gsub("X", "", Trial)) %>%
+  mutate(Trial = as.numeric(Trial)) %>%
+  group_by(Trial, Treatment, Species) %>%
+  summarize(
+    Mean_Predicted_prob = mean(Value),
+    SE_Predicted_prob = sd(Value)
+    ) %>%
+  ungroup() %>%
+  mutate(
+    Treatment = factor(Treatment,
+                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")),
+    ) %>%
+data.frame()
+write.csv(Fig_df, file= "./output/Checking/Fig_df.csv")
+# Make the plot
+figure_results <- plotting(Fig_df)
+ggsave("./output/figures/figure_results.png", plot=figure_results, width = 18, height = 20, units = "cm", dpi = 3000)
+knitr::include_graphics("./output/figures/figure_results.png")
+```
+
 
 ## Discussion
 
@@ -236,9 +269,9 @@ resid_guich <- residuals(mod_guich)
 Model formula for the reversal task is:  
 Choice  ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)  
 Plots for the different models of the associative task:  
-1.- _L. delicata_  
-  1.a.- Red  
+1.- _L. delicata_    
 ```{r , plotmod_drr, out.width="70%", fig.align="center"}
+bayes_R2(mod_deli)
 plot(mod_deli)
 ```
 
@@ -248,5 +281,6 @@ cat("\\newpage")
 
 2.- _L. guichenoti_  
 ```{r , plotmod_grr, out.width="70%", fig.align="center"}
+bayes_R2(mod_guich)
 plot(mod_guich)
 ```
