@@ -1,0 +1,9 @@
+"","Specie","Treatment","Mean","CI","PValue"
+"1","L. delicata","CORT-Cold",0.052,"0.022 , 0.083",0.001
+"2","L. delicata","Control-Cold",0.066,"0.037 , 0.096",0
+"3","L. delicata","CORT-Hot",0.073,"0.035 , 0.112",0
+"4","L. delicata","Control-Hot",0.045,"0.022 , 0.069",0
+"5","L. guichenoti","CORT-Cold",0.068,"0.013 , 0.125",0.023
+"6","L. guichenoti","Control-Cold",0.086,"0.028 , 0.148",0.003
+"7","L. guichenoti","CORT-Hot",0.072,"0.029 , 0.115",0.002
+"8","L. guichenoti","Control-Hot",0.066,"0.03 , 0.104",0.001

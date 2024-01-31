@@ -88,10 +88,10 @@ Originally, we started with 96 lizards, 48 per species and 12 per treatment per 
 source(here("R", "func.R"))
 # Model formula: FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)
 ## A) L. delicata
-deli <- fit_m(clean_df, "deli", refit = TRUE)
+deli <- fit_m(clean_df, "deli", refit = FALSE)
 write.csv(deli, file= "./output/Checking/deli.csv")
 ## B) L. guichenoti
-guich <- fit_m(clean_df, "guich", refit = TRUE)
+guich <- fit_m(clean_df, "guich", refit = FALSE)
 write.csv(guich, file= "./output/Checking/guich.csv")
 ```
 
@@ -139,8 +139,10 @@ table_df <- data.frame(
   Treatment = rep(rep(treatments, each = 1), times = length(specie)),
   Mean = rep(mean, each = 1),
   CI = rep(intervals, each = 1),
-  PValue = rep(pvalue, each = 1),
+  PValue = rep(pvalue, each = 1)
 )
+#
+write.csv(table_df, file= "./output/Checking/df.csv")
 #
 ############################## ADDING SAMPLE SIZE TO DF FOR TABLE ##############################
 # Make n_list into a df
@@ -156,7 +158,6 @@ n_df <- as.data.frame(do.call(rbind, n_list)) %>%
 # Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
 new_table_df <- merge(table_df, n_df) %>%
   rename('p-value' = 'PValue', '95% CI' = 'CI') %>% #Change the names of the columns for the table
-  pivot_wider(names_from = Task, values_from = c(Mean, `95% CI`, `p-value`)) %>% # to split between Asociative and Reversal
   select(Specie, Treatment, Mean, `95% CI`, `p-value`, n) %>% #To order the columns in the way I want for the table
   mutate(Specie = factor(Specie,
                   levels = c("L. delicata", "L. guichenoti")),
@@ -165,7 +166,7 @@ new_table_df <- merge(table_df, n_df) %>%
   arrange(Specie, Treatment) %>% # To arrange the rows the way I want
   unite("Treatment", c("Treatment", "n"), sep = " (n = ") %>%
   mutate(Treatment = paste0(Treatment, ")"))
-write.csv(new_table_data, file= "./output/Checking/new_table_data.csv")
+write.csv(new_table_df, file= "./output/Checking/new_table_data.csv")
 #
 ############################## MAKING THE TABLE ##############################
 ## Table format
@@ -173,30 +174,21 @@ set_flextable_defaults(
  font.family = "Times New Roman",
  fint.size = 10)
 # Split the table_data df by task
-real_table <- flextable(new_table_data) %>%
-    bold(~ `p-value_Associative` < 0.05, ~ `p-value_Associative` + Mean_Associative + `95% CI_Associative`) %>%
-    bold(~ `p-value_Reversal` < 0.05, ~ `p-value_Reversal` + Mean_Reversal + `95% CI_Reversal`) %>%
+real_table <- flextable(new_table_df) %>%
+    bold(~ `p-value` < 0.05, ~ `p-value` + Mean + `95% CI`) %>%
     set_table_properties(width = 1) %>%
     align(align="center", part="all") %>% 
-    add_header_row(values = c("", "Associative task", "Reversal task"), colwidths = c(3, 3, 3)) %>%
-    set_header_labels(Mean_Associative = "Mean",
-                      `95% CI_Associative` = "95% CI",
-                      `p-value_Associative` = "p-value",
-                      Mean_Reversal = "Mean",
-                      `95% CI_Reversal` = "95% CI",
-                      `p-value_Reversal` = "p-value") %>%
+    set_header_labels(Mean = "Mean",
+                      `95% CI` = "95% CI",
+                      `p-value` = "p-value") %>%
     italic(j = 1, italic = TRUE, part = "body") %>% # To have names od species in italics
-    flextable::compose(i = c(2:8,10:16), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
-    flextable::compose(i = c(2:4,6:8,10:12,14:16), j = 2, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the second column
-    hline(i = c(4,12), j = c(2:9), part = "body") %>% # To make some horizontal lines
-    hline(i = c(8), j = c(1:9), part = "body") %>% # To make some horizontal lines
-    vline(i = (1:16), j = c(3,6), part = "body") %>% # To make some vertical lines on body
-    vline(j=c(3,6), part = "header") %>% # To make some vertical lines on header
+    flextable::compose(i = c(2:4,6:8), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
+    hline(i = 4, j = c(1:5), part = "body") %>% # To make some horizontal lines
     autofit() 
 real_table
 ```
 
-We did not find any significant differences between treatments in _L. delicata_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean(deli_ControlCold - deli_CORTCold), 3)`, p- value = `r format_dec(pmcmc(deli_ControlCold - deli_CORTCold), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean((deli_ControlHot + drb_ControlHot) - (deli_CORTHot + drb_CORTHot)), 3)`, p- value = `r format_dec(pmcmc((deli_ControlHot + drb_ControlHot) - (deli_CORTHot + drb_CORTHot)), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean((deli_ControlHot + drb_ControlHot) - (deli_ControlCold + drb_ControlCold)), 3)`, p-value = `r format_dec(pmcmc((deli_ControlHot + drb_ControlHot) - (deli_ControlCold + drb_ControlCold)), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean((deli_CORTHot + drb_CORTHot) - (deli_CORTCold + drb_CORTCold)), 3)`, p-value = `r format_dec(pmcmc((deli_CORTHot + drb_CORTHot) - (deli_CORTCold + drb_CORTCold)), 3)`) (see @Figdeli) or _L. guichenoti_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean((guich_ControlCold + grb_ControlCold) - (guich_CORTCold + grb_CORTCold)), 3)`, p- value = `r format_dec(pmcmc((guich_ControlCold + grb_ControlCold) - (guich_CORTCold + grb_CORTCold)), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean((guich_ControlHot + grb_ControlHot) - (guich_CORTHot + grb_CORTHot)), 3)`, p- value = `r format_dec(pmcmc((guich_ControlHot + grb_ControlHot) - (guich_CORTHot + grb_CORTHot)), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean((guich_ControlHot + grb_ControlHot) - (guich_ControlCold + grb_ControlCold)), 3)`, p-value = `r format_dec(pmcmc((guich_ControlHot + grb_ControlHot) - (guich_ControlCold + grb_ControlCold)), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean((guich_CORTHot + grb_CORTHot) - (guich_CORTCold + grb_CORTCold)), 3)`, p-value = `r format_dec(pmcmc((guich_CORTHot + grb_CORTHot) - (guich_CORTCold + grb_CORTCold)), 3)`) (see @Figguich). We did not find any effect of incubation temperature (_L. delicata_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((deli_CORTHot + deli_ControlHot + drb_CORTHot + drb_ControlHot) - (deli_CORTCold + deli_ControlCold + drb_CORTCold + drb_ControlCold)),3)`, p-value = `r format_dec(pmcmc((deli_CORTHot + deli_ControlHot + drb_CORTHot + drb_ControlHot) - (deli_CORTCold + deli_ControlCold + drb_CORTCold + drb_ControlCold)),3)`; _L. guichenoti_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((guich_CORTHot + guich_ControlHot + grb_CORTHot + grb_ControlHot) -(guich_CORTCold + guich_ControlCold + grb_CORTCold + grb_ControlCold)),3)`, p-value = `r format_dec(pmcmc((guich_CORTHot + guich_ControlHot + grb_CORTHot + grb_ControlHot) -(guich_CORTCold + guich_ControlCold + grb_CORTCold + grb_ControlCold)),3)`) or the hormone (_L. delicata_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((deli_ControlCold + deli_ControlHot + drb_ControlCold + drb_ControlHot) - (deli_CORTCold + deli_CORTHot + drb_CORTCold + drb_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((deli_ControlCold + deli_ControlHot + drb_ControlCold + drb_ControlHot) - (deli_CORTCold + deli_CORTHot + drb_CORTCold + drb_CORTHot)), 3)`;_L. guichenoti_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((guich_ControlCold + guich_ControlHot + grb_ControlCold + grb_ControlHot)-(guich_CORTCold + guich_CORTHot + grb_CORTCold + grb_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((guich_ControlCold + guich_ControlHot + grb_ControlCold + grb_ControlHot)-(guich_CORTCold + guich_CORTHot + grb_CORTCold + grb_CORTHot)), 3)`) when groups were pooled. Finally, we did not find any significant differences when we compared the estimated slopes between species for the reversal task (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot + drb_CORTCold + drb_ControlCold + drb_CORTHot + drb_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot + grb_CORTCold + grb_ControlCold + grb_CORTHot + grb_ControlHot)), 3)`, p-value = `r format_dec(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot + drb_CORTCold + drb_ControlCold + drb_CORTHot + drb_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot + grb_CORTCold + grb_ControlCold + grb_CORTHot + grb_ControlHot)), 3)`). 
+We did not find any significant differences between treatments in _L. delicata_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean(deli_ControlCold - deli_CORTCold), 3)`, p- value = `r format_dec(pmcmc(deli_ControlCold - deli_CORTCold), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean(deli_ControlHot - deli_CORTHot), 3)`, p- value = `r format_dec(pmcmc(deli_ControlHot - deli_CORTHot), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean(deli_ControlHot - deli_ControlCold), 3)`, p-value = `r format_dec(pmcmc(deli_ControlHot - deli_ControlCold), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean(deli_CORTHot - deli_CORTCold), 3)`, p-value = `r format_dec(pmcmc(deli_CORTHot - deli_CORTCold), 3)`) (see @fig-results) or _L. guichenoti_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean(guich_ControlCold - guich_CORTCold), 3)`, p- value = `r format_dec(pmcmc(guich_ControlCold - guich_CORTCold), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean(guich_ControlHot - guich_CORTHot), 3)`, p- value = `r format_dec(pmcmc(guich_ControlHot - guich_CORTHot), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean(guich_ControlHot - guich_ControlCold), 3)`, p-value = `r format_dec(pmcmc(guich_ControlHot - guich_ControlCold), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean(guich_CORTHot - guich_CORTCold), 3)`, p-value = `r format_dec(pmcmc(guich_CORTHot - guich_CORTCold), 3)`) (see @fig-results). We did not find any effect of incubation temperature (_L. delicata_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p-value = `r format_dec(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`; _L. guichenoti_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p-value = `r format_dec(pmcmc((guich_CORTHot + guich_ControlHot) -(guich_CORTCold + guich_ControlCold)),3)`) or the hormone (_L. delicata_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`;_L. guichenoti_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((guich_ControlCold + guich_ControlHot)-(guich_CORTCold + guich_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((guich_ControlCold + guich_ControlHot)-(guich_CORTCold + guich_CORTHot)), 3)`) when groups were pooled. Finally, we did not find any significant differences when we compared the estimated slopes between species for the reversal task (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p-value = `r format_dec(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`). 
 
 ## Discussion
 
@@ -255,16 +247,7 @@ Plots for the different models of the associative task:
 1.- _L. delicata_  
   1.a.- Red  
 ```{r , plotmod_drr, out.width="70%", fig.align="center"}
-plot(mod_drr)
-```
-
-```{r, results='asis', echo=FALSE}
-cat("\\newpage")
-```
-
-  1.b.- Blue  
-```{r , plotmod_drb, out.width="70%", fig.align="center"}  
-plot(mod_drb)
+plot(mod_deli)
 ```
 
 ```{r, results='asis', echo=FALSE}
@@ -272,16 +255,6 @@ cat("\\newpage")
 ```
 
 2.- _L. guichenoti_  
-  2.a.- Red  
 ```{r , plotmod_grr, out.width="70%", fig.align="center"}
-plot(mod_grr)
-```
-
-```{r, results='asis', echo=FALSE}
-cat("\\newpage")
-```
-
-  2.b.- Blue  
-```{r , plotmod_grb, out.width="70%", fig.align="center"}
-plot(mod_grb)
+plot(mod_guich)
 ```
