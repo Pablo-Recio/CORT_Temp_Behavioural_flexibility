@@ -19,7 +19,7 @@ filtered_lizards <- percentage_per_lizard %>%
 # Subset the original dataset based on the filtered lizard IDs
 clean_df <- data %>%
   filter(lizard_id %in% filtered_lizards$lizard_id) %>%
-  filter(sum(is.na(FC_reversal)) <= 15) ungroup()  %>%
+  filter(sum(is.na(FC_reversal)) <= 15) %>%
     mutate(group = factor(group,
      levels = c("R_B", "B_R"),
      labels=c("R_B"="Red", "B_R"="Blue"))) %>%
@@ -33,6 +33,6 @@ clean_df <- data %>%
       labels = c("B" = "CORT", "A" = "Control"))) %>%
     mutate(trial_reversal=as.numeric(trial_reversal)) %>%
   data.frame()
-write.csv(filtered_df, "./output/databases_clean/clean_database.csv")
+write.csv(clean_df, "./output/databases_clean/clean_df.csv")
 
 
