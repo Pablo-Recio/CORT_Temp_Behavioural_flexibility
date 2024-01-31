@@ -20,9 +20,6 @@ filtered_lizards <- percentage_per_lizard %>%
 clean_df <- data %>%
   filter(lizard_id %in% filtered_lizards$lizard_id) %>%
   filter(sum(is.na(FC_reversal)) <= 15) %>%
-    mutate(group = factor(group,
-     levels = c("R_B", "B_R"),
-     labels=c("R_B"="Red", "B_R"="Blue"))) %>%
     mutate(temp = gsub("[AB]_", "", trt),
           cort = gsub("_[2][38]", "", trt))  %>%
     mutate(temp = factor(temp,

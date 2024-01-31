@@ -9,12 +9,11 @@ pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4,
 #' @description Estract sample size per group
 #' @param df To select the df
 #' @param sp To select the species of interest ("deli"/"guich")
-#' @param bias To select group depending on the colour assigned as correct for each task ("blue"/"red")
 #' @param corti To select cort treatment ("CORT"/"Control")
 #' @param therm To select temp treatment ("Cold"/"Hot")
-sample <- function(df, sp, bias, corti, therm){
+sample <- function(df, sp, corti, therm){
   sample_size <- df %>%
-                filter(species == sp, group == bias, cort == corti, temp == therm, trial_reversal == 1) %>%
+                filter(species == sp, cort == corti, temp == therm, trial_reversal == 1) %>%
                 group_by(lizard_id) %>%
                 summarise(n = n()) %>%
                 summarise(total_count = sum(n)) %>%
@@ -28,10 +27,9 @@ sample <- function(df, sp, bias, corti, therm){
 #' @description Fit brm models for different the associative task
 #' @param df To select the df
 #' @param sp To select the species of interest ("deli"/"guich")
-#' @param bias To select group depending on the colour assigned as correct for each task ("blue"/"red")
-#' @param refir To choose whether to refit the models (TRUE, default) or use the ones already made (FALSE)
+#' @param refit To choose whether to refit the models (TRUE, default) or use the ones already made (FALSE)
 #' @return Raw posteriors of fitted brm model for each treatment, species, and group (df)
-fit_m <- function(df, sp, bias, refit = TRUE) {
+fit_m <- function(df, sp, refit = TRUE) {
   formula <- (FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)) 
   #Specify species
     if (sp == "deli"){
@@ -51,36 +49,18 @@ fit_m <- function(df, sp, bias, refit = TRUE) {
         stop("Species not valid")
       }
     }
-  #Specify bias/group
-    if (bias == "blue"){
-      sub_data <- sp_data %>%
-            group_by(lizard_id) %>%
-            filter(group == "Blue") %>%
-            ungroup() %>%
-      data.frame() 
-    } else {
-      if(bias == "red"){
-        sub_data <- sp_data %>%
-              group_by(lizard_id) %>%
-              filter(group == "Red") %>%
-              ungroup() %>%
-        data.frame()
-      } else {
-        stop("Group/colour not valid")
-      }
-    }
   #Fit the model only if it has not been fit yet (if refit=TRUE)
   if(refit){
     # Fit the model
     model <- brm(formula,
-                data = sub_data,
+                data = sp_data,
                 family = bernoulli(link = "logit"),
                 chains = 4, cores = 4, iter = 3000, warmup = 1000, control = list(adapt_delta = 0.99))
     # Write the model to a file
-    saveRDS(model, file = paste0(here("output/models/"), sp, "_", bias, ".rds"))
+    saveRDS(model, file = paste0(here("output/models/"), sp, ".rds"))
   } else {
       # Read the model from a file
-      model <- readRDS(file = paste0(here("output/models/"), sp, "_", bias, ".rds"))
+      model <- readRDS(file = paste0(here("output/models/"), sp, ".rds"))
   } 
   # Extract posteriors
   posteriors <- as_draws_df(model)
