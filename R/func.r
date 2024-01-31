@@ -1,6 +1,6 @@
 #################### 
 ####################
-pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4, zoo, lmerTest, broom, tidybayes)
+pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4, zoo, lmerTest, broom, tidybayes, ggh4x)
 #
 ####################
 ####################
@@ -119,4 +119,76 @@ pmcmc <- function(x, null = 0, twotail = TRUE, dir){
 format_dec <- function(x, n) {
   z <- sprintf(paste0("%.",n,"f"), x)
   return(as.numeric(z))
+}
+####################
+####################
+# Function to create each df for the figure
+#' @title df_fig
+#' @param df to select the df
+#' @param specie to add data of the specie
+df_fig <- function(df, specie){
+  # Create a vector with treatments
+  treatments <- c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")
+  # Create new matrix and new dfs
+  treat_matrix <- matrix(NA, nrow = 8000, ncol = 40)
+  fig_df <- data.frame()
+  # Loop through treatments
+  for(t in treatments){
+    if(t == "CORT-Cold"){
+      m <- df$b_trial_reversal
+      u <- df$b_Intercept
+    } else if(t == "Control-Cold"){
+        m <- (df$'b_trial_reversal:cortControl' + df$b_trial_reversal)
+        u <- (df$b_cortControl + df$b_Intercept)
+    } else if(t == "CORT-Hot"){
+        m <- (df$'b_trial_reversal:tempHot' + df$b_trial_reversal)
+        u <- (df$b_tempHot + df$b_Intercept)
+    } else if(t == "Control-Hot"){
+        m <- (df$'b_trial_reversal:cortControl:tempHot' + df$b_trial_reversal+ df$'b_trial_reversal:cortControl' + df$'b_trial_reversal:tempHot')
+        u <- (df$'b_cortControl:tempHot' + df$b_cortControl + df$b_tempHot + df$b_Intercept)
+    } else {
+    stop("loop wrong")
+    }
+    # Loop per treatment
+    for(x in 0:40){
+      for(j in 1:8000){
+        value <- exp(u[j] + m[j] * x) / (1 + exp(u[j] + m[j] * x))
+        treat_matrix[j, x] <- value
+      }
+    }
+    treat_df <- as.data.frame(treat_matrix)
+    colnames(treat_df) <- paste0("X", 1:40)  # Adjust column names
+    treat_df <- gather(treat_df, key = "Trial", value = "Value")  # Reshape data frame
+    treat_df$Treatment <- t
+    fig_df <- rbind(fig_df, treat_df)
+  }
+  # Add species and group information
+  fig_df$Species <- specie
+  return(fig_df)
+}
+####################
+####################
+# Function to create the plot
+#' @title plotting
+#' @param df to select the df
+plotting <- function(df){
+  plot <- ggplot(df, aes(x = Trial, y = Mean_Predicted_prob, color = Treatment)) +
+  geom_line(linewidth = 1) +
+  scale_color_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#616161")) +
+  geom_ribbon(aes(ymin = Mean_Predicted_prob - SE_Predicted_prob, ymax = Mean_Predicted_prob + SE_Predicted_prob, fill = Treatment), color = NA, alpha = 0.075) + 
+  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#616161")) +
+  theme_classic() +
+  facet_grid2(Species, scale = "free_x", space = "free_x", axes = "all") +
+  theme(strip.placement = "outside") +  
+  theme(strip.background = element_blank()) +
+  labs(y = "Predicted probability of correct choice", x = "Trial") +
+  theme(plot.margin = margin(5.5, 5.5, 5.5, 5.5, "mm")) + 
+  theme(
+    axis.title = element_text(size = 15, family = "Times New Roman"),
+    axis.text = element_text(size = 10, family = "Times New Roman"),
+    legend.title = element_text(size = 12, family = "Times New Roman"),
+    legend.text = element_text(size = 10, family = "Times New Roman"),
+    strip.text = element_text(size = 13, family = "Times New Roman")
+  )  
+  return(plot)
 }
