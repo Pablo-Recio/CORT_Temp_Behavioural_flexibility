@@ -72,14 +72,12 @@ temperature <- c("Cold", "Hot")
 n_list <- list()
 #
 for(i in 1:length(specie)){
-  for(j in 1:length(groups)){
-    for(k in 1:length(hormone)){
-      for(l in 1:length(temperature)){
-        n_list[[paste(specie[i], groups[j], hormone[k], temperature[l], sep = "_")]] <- sample(clean_df, specie[i], groups[j], hormone[k], temperature[l])
+  for(k in 1:length(hormone)){
+    for(l in 1:length(temperature)){
+      n_list[[paste(specie[i], hormone[k], temperature[l], sep = "_")]] <- sample(clean_df, specie[i], hormone[k], temperature[l])
       }
     }
   }
-}
 ```
 
 Originally, we started with 96 lizards, 48 per species and 12 per treatment per species. However, due to natural mortality (n = 11), no completion of the training stage (n = 1), or no motivation during the learning tasks (n = 3; see above), we ended up with a total of 81 lizards. Final sample sizes per treatment and species are disclosed on @tbl-data. 
@@ -88,43 +86,27 @@ Originally, we started with 96 lizards, 48 per species and 12 per treatment per 
 #| label: models
 # Fitting the model and extraction of posteriors for both types of task and species using fit_m function (see func.r in R folder). The result everytime the function is used is a df with the posteriors of the model. The functions saves the model automatically in output/models; and when the parameter refit = FALSE then the posteriors are extracted from the model previously written instead of fitting the model again each time.
 source(here("R", "func.R"))
-# Reversal task. Model formula: FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)
-## B) L. delicata
-deli_red <- fit_m(clean_df, "deli", "red", refit = TRUE)
-write.csv(deli_red, file= "./output/Checking/deli_red.csv")
-deli_blue <- fit_m(clean_df, "deli", "blue", refit = TRUE)
-write.csv(deli_blue, file= "./output/Checking/deli_blue.csv")
+# Model formula: FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)
+## A) L. delicata
+deli <- fit_m(clean_df, "deli", refit = TRUE)
+write.csv(deli, file= "./output/Checking/deli.csv")
 ## B) L. guichenoti
-guich_red <- fit_m(clean_df, "guich", "red", refit = TRUE)
-write.csv(guich_red, file= "./output/Checking/guich_red.csv")
-guich_blue <- fit_m(clean_df, "guich", "blue", refit = TRUE)
-write.csv(guich_blue, file= "./output/Checking/guich_blue.csv")
+guich <- fit_m(clean_df, "guich", refit = TRUE)
+write.csv(guich, file= "./output/Checking/guich.csv")
 ```
 
 ```{r, resultsRev}
 # Rename some of the posteriors and make new estimates for the learning rate for the Reversal task doing the same thing we did in the chunk above.
 ## 1) L. delicata
-### Group = red
-drr_CORTCold <- deli_rev_red$b_trial_reversal
-drr_ControlCold <- (deli_rev_red$'b_trial_reversal:cortControl' + deli_rev_red$b_trial_reversal)
-drr_CORTHot <- (deli_rev_red$'b_trial_reversal:tempHot' + deli_rev_red$b_trial_reversal)
-drr_ControlHot <- (deli_rev_red$'b_trial_reversal:cortControl:tempHot' + deli_rev_red$b_trial_reversal + deli_rev_red$'b_trial_reversal:cortControl' + deli_rev_red$'b_trial_reversal:tempHot')
-### Group = blue
-drb_CORTCold <- deli_rev_blue$b_trial_reversal
-drb_ControlCold <- (deli_rev_blue$'b_trial_reversal:cortControl' + deli_rev_blue$b_trial_reversal)
-drb_CORTHot <- (deli_rev_blue$'b_trial_reversal:tempHot' + deli_rev_blue$b_trial_reversal)
-drb_ControlHot <- (deli_rev_blue$'b_trial_reversal:cortControl:tempHot' + deli_rev_blue$b_trial_reversal + deli_rev_blue$'b_trial_reversal:cortControl' + deli_rev_blue$'b_trial_reversal:tempHot')
+deli_CORTCold <- deli$b_trial_reversal
+deli_ControlCold <- (deli$'b_trial_reversal:cortControl' + deli$b_trial_reversal)
+deli_CORTHot <- (deli$'b_trial_reversal:tempHot' + deli$b_trial_reversal)
+deli_ControlHot <- (deli$'b_trial_reversal:cortControl:tempHot' + deli$b_trial_reversal + deli$'b_trial_reversal:cortControl' + deli$'b_trial_reversal:tempHot')
 ## 2) L. guichenoti
-### Group = red
-grr_CORTCold <- guich_rev_red$b_trial_reversal
-grr_ControlCold <- (guich_rev_red$'b_trial_reversal:cortControl' + guich_rev_red$b_trial_reversal)
-grr_CORTHot <- (guich_rev_red$'b_trial_reversal:tempHot' + guich_rev_red$b_trial_reversal)
-grr_ControlHot <- (guich_rev_red$'b_trial_reversal:cortControl:tempHot' + guich_rev_red$b_trial_reversal + guich_rev_red$'b_trial_reversal:cortControl' + guich_rev_red$'b_trial_reversal:tempHot')
-### Group = blue
-grb_CORTCold <- guich_rev_blue$b_trial_reversal
-grb_ControlCold <- (guich_rev_blue$'b_trial_reversal:cortControl' + guich_rev_blue$b_trial_reversal)
-grb_CORTHot <- (guich_rev_blue$'b_trial_reversal:tempHot' + guich_rev_blue$b_trial_reversal)
-grb_ControlHot <- (guich_rev_blue$'b_trial_reversal:cortControl:tempHot' + guich_rev_blue$b_trial_reversal + guich_rev_blue$'b_trial_reversal:cortControl' + guich_rev_blue$'b_trial_reversal:tempHot')
+guich_CORTCold <- guich$b_trial_reversal
+guich_ControlCold <- (guich$'b_trial_reversal:cortControl' + guich$b_trial_reversal)
+guich_CORTHot <- (guich$'b_trial_reversal:tempHot' + guich$b_trial_reversal)
+guich_ControlHot <- (guich$'b_trial_reversal:cortControl:tempHot' + guich$b_trial_reversal + guich$'b_trial_reversal:cortControl' + guich$'b_trial_reversal:tempHot')
 ```
 
 ```{r, tbl-data}
@@ -135,85 +117,52 @@ source(here("R", "func.R"))
 ############################## CREATING BIG DF FOR TABLE ##############################
 # Building the vectors for titles of rows and columns
 specie <- c("L. delicata", "L. guichenoti")
-groups <- c("Red", "Blue")
-test <- c("Associative", "Reversal")
 treatments <- c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")
 values <- c("Mean", "95% CI", "p-value")
 # Building the vectors for estimated means, co.intervals(95%), and p-values for the slopes obtained from posteriors. p-values are obtained using pmcmc function (see func.R), assuming a two-tailed test that testes the hypothesis that the value (slopes in this case) is 0.
 #First get estimates for both tasks
-estimates_asso <- list(
-  dar_CORTCold, dar_ControlCold, dar_CORTHot, dar_ControlHot, 
-  dab_CORTCold, dab_ControlCold, dab_CORTHot, dab_ControlHot, 
-  gar_CORTCold, gar_ControlCold, gar_CORTHot, gar_ControlHot, 
-  gab_CORTCold, gab_ControlCold, gab_CORTHot, gab_ControlHot
+estimates <- list(
+  deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot, 
+  guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot
 )
 #
-estimates_rev <- list(
-  drr_CORTCold, drr_ControlCold, drr_CORTHot, drr_ControlHot, 
-  drb_CORTCold, drb_ControlCold, drb_CORTHot, drb_ControlHot, 
-  grr_CORTCold, grr_ControlCold, grr_CORTHot, grr_ControlHot, 
-  grb_CORTCold, grb_ControlCold, grb_CORTHot, grb_ControlHot
-)
 # Then get the mean, co.intervals(95%), and p-values
-asso_mean <- format_dec(sapply(estimates_asso, mean), 3)
-asso_interval_025 <- format_dec(sapply(estimates_asso, function(x) quantile(x,0.025)), 3)
-asso_interval_975 <- format_dec(sapply(estimates_asso, function(x) quantile(x,0.975)), 3)
-asso_intervals <- paste(asso_interval_025, asso_interval_975, sep = " , ")
-asso_pvalue <- format_dec(sapply(estimates_asso, pmcmc), 3)
+mean <- format_dec(sapply(estimates, mean), 3)
+interval_025 <- format_dec(sapply(estimates, function(x) quantile(x,0.025)), 3)
+interval_975 <- format_dec(sapply(estimates, function(x) quantile(x,0.975)), 3)
+intervals <- paste(interval_025, interval_975, sep = " , ")
+pvalue <- format_dec(sapply(estimates, pmcmc), 3)
 #
-rev_mean <- format_dec(sapply(estimates_rev, mean), 3)
-rev_interval_025 <- format_dec(sapply(estimates_rev, function(x) quantile(x,0.025)), 3)
-rev_interval_975 <- format_dec(sapply(estimates_rev, function(x) quantile(x,0.975)), 3)
-rev_intervals <- paste(rev_interval_025, rev_interval_975, sep = " , ")
-rev_pvalue <- format_dec(sapply(estimates_rev, pmcmc), 3)
-#
-# Building the df for the associative
-asso_df <- data.frame(
-  Specie = rep(specie, each = length(groups) * length(treatments)),
-  Group = rep(rep(groups, each = length(treatments)), times = length(specie)),
-  Treatment = rep(rep(treatments, each = 1), times = length(groups) * length(specie)),
-  Mean = rep(asso_mean, each = 1),
-  CI = rep(asso_intervals, each = 1),
-  PValue = rep(asso_pvalue, each = 1),
-  Task = rep("Associative", length(asso_mean))
+# Building the df
+table_df <- data.frame(
+  Specie = rep(specie, each = length(treatments)),
+  Treatment = rep(rep(treatments, each = 1), times = length(specie)),
+  Mean = rep(mean, each = 1),
+  CI = rep(intervals, each = 1),
+  PValue = rep(pvalue, each = 1),
 )
-# Building the df for the reversal
-rev_df <- data.frame(
-  Specie = rep(specie, each = length(groups) * length(treatments)),
-  Group = rep(rep(groups, each = length(treatments)), times = length(specie)),
-  Treatment = rep(rep(treatments, each = 1), times = length(groups) * length(specie)),
-  Mean = rep(rev_mean, each = 1),
-  CI = rep(rev_intervals, each = 1),
-  PValue = rep(rev_pvalue, each = 1),
-  Task = rep("Reversal", length(rev_mean))
-)
-# Joining both dfs
-table_data <- rbind(asso_df, rev_df)
-table_data[, sapply(table_data, is.numeric)] <- lapply(table_data[, sapply(table_data, is.numeric)], function(x) format(x, scientific = FALSE))
 #
 ############################## ADDING SAMPLE SIZE TO DF FOR TABLE ##############################
 # Make n_list into a df
 n_df <- as.data.frame(do.call(rbind, n_list)) %>%
   rename("n" = V1) %>%
   rownames_to_column("model") %>%
-  separate(model, into = c("Specie", "Group", "cort", "temp"), sep = "_") %>%
+  separate(model, into = c("Specie", "cort", "temp"), sep = "_") %>%
   unite("Treatment", c("cort", "temp"), sep = "-") %>%
   mutate(Specie = factor(Specie,
                   labels = c(delicata = "L. delicata", guichenoti = "L. guichenoti")),
         Treatment = factor(Treatment,
                    levels = c("CORT-Cold", "Control-Cold", "CORT-Hot","Control-Hot")))
 # Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
-new_table_data <- merge(table_data, n_df) %>%
+new_table_df <- merge(table_df, n_df) %>%
   rename('p-value' = 'PValue', '95% CI' = 'CI') %>% #Change the names of the columns for the table
   pivot_wider(names_from = Task, values_from = c(Mean, `95% CI`, `p-value`)) %>% # to split between Asociative and Reversal
-  select(Specie, Group, Treatment, Mean_Associative, `95% CI_Associative`, `p-value_Associative`, Mean_Reversal, `95% CI_Reversal`, `p-value_Reversal`, n) %>% #To order the columns in the way I want for the table
+  select(Specie, Treatment, Mean, `95% CI`, `p-value`, n) %>% #To order the columns in the way I want for the table
   mutate(Specie = factor(Specie,
                   levels = c("L. delicata", "L. guichenoti")),
-        Group = factor(Group,
-                  levels = c("Red", "Blue")),
         Treatment = factor(Treatment, 
                   levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")))%>%
-  arrange(Specie, Group, Treatment) %>% # To arrange the rows the way I want
+  arrange(Specie, Treatment) %>% # To arrange the rows the way I want
   unite("Treatment", c("Treatment", "n"), sep = " (n = ") %>%
   mutate(Treatment = paste0(Treatment, ")"))
 write.csv(new_table_data, file= "./output/Checking/new_table_data.csv")
@@ -247,7 +196,7 @@ real_table <- flextable(new_table_data) %>%
 real_table
 ```
 
-In the reversal tesk, we decided to pool both groups 'Blue' and 'Red' to make the between-treatment comparisons for two reasons. First, we did not find any significant differences caused group on the learning slopes (_L. delicata_: 'Blue' learning slope - 'Red'learning slope = `r format_dec(mean((drb_CORTCold + drb_ControlCold + drb_CORTHot + drb_ControlHot) - (drr_CORTCold + drr_ControlCold + drr_CORTCold + drr_ControlHot)), 3)`, p = `r format_dec(pmcmc((drb_CORTCold + drb_ControlCold + drb_CORTHot + drb_ControlHot) - (drr_CORTCold + drr_ControlCold + drr_CORTCold + drr_ControlHot)), 3)`; _L. guichenoti_: 'Blue' learning slope - 'Red'learning slope = `r format_dec(mean((grb_CORTCold + grb_ControlCold + grb_CORTHot + grb_ControlHot) - (grr_CORTCold + grr_ControlCold + grr_CORTCold + grr_ControlHot)), 3)`, p = `r format_dec(pmcmc((grb_CORTCold + grb_ControlCold + grb_CORTHot + grb_ControlHot) - (grr_CORTCold + grr_ControlCold + grr_CORTCold + grr_ControlHot)), 3)`). Second, we were expecting an acquired bias towards the colour assigned in the associative task as part of the design. Nonetheless, we did not find any significant differences between treatments in _L. delicata_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean((drr_ControlCold + drb_ControlCold) - (drr_CORTCold + drb_CORTCold)), 3)`, p- value = `r format_dec(pmcmc((drr_ControlCold + drb_ControlCold) - (drr_CORTCold + drb_CORTCold)), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean((drr_ControlHot + drb_ControlHot) - (drr_CORTHot + drb_CORTHot)), 3)`, p- value = `r format_dec(pmcmc((drr_ControlHot + drb_ControlHot) - (drr_CORTHot + drb_CORTHot)), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean((drr_ControlHot + drb_ControlHot) - (drr_ControlCold + drb_ControlCold)), 3)`, p-value = `r format_dec(pmcmc((drr_ControlHot + drb_ControlHot) - (drr_ControlCold + drb_ControlCold)), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean((drr_CORTHot + drb_CORTHot) - (drr_CORTCold + drb_CORTCold)), 3)`, p-value = `r format_dec(pmcmc((drr_CORTHot + drb_CORTHot) - (drr_CORTCold + drb_CORTCold)), 3)`) (see @Figdeli) or _L. guichenoti_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean((grr_ControlCold + grb_ControlCold) - (grr_CORTCold + grb_CORTCold)), 3)`, p- value = `r format_dec(pmcmc((grr_ControlCold + grb_ControlCold) - (grr_CORTCold + grb_CORTCold)), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean((grr_ControlHot + grb_ControlHot) - (grr_CORTHot + grb_CORTHot)), 3)`, p- value = `r format_dec(pmcmc((grr_ControlHot + grb_ControlHot) - (grr_CORTHot + grb_CORTHot)), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean((grr_ControlHot + grb_ControlHot) - (grr_ControlCold + grb_ControlCold)), 3)`, p-value = `r format_dec(pmcmc((grr_ControlHot + grb_ControlHot) - (grr_ControlCold + grb_ControlCold)), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean((grr_CORTHot + grb_CORTHot) - (grr_CORTCold + grb_CORTCold)), 3)`, p-value = `r format_dec(pmcmc((grr_CORTHot + grb_CORTHot) - (grr_CORTCold + grb_CORTCold)), 3)`) (see @Figguich). We did not find any effect of incubation temperature (_L. delicata_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((drr_CORTHot + drr_ControlHot + drb_CORTHot + drb_ControlHot) - (drr_CORTCold + drr_ControlCold + drb_CORTCold + drb_ControlCold)),3)`, p-value = `r format_dec(pmcmc((drr_CORTHot + drr_ControlHot + drb_CORTHot + drb_ControlHot) - (drr_CORTCold + drr_ControlCold + drb_CORTCold + drb_ControlCold)),3)`; _L. guichenoti_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((grr_CORTHot + grr_ControlHot + grb_CORTHot + grb_ControlHot) -(grr_CORTCold + grr_ControlCold + grb_CORTCold + grb_ControlCold)),3)`, p-value = `r format_dec(pmcmc((grr_CORTHot + grr_ControlHot + grb_CORTHot + grb_ControlHot) -(grr_CORTCold + grr_ControlCold + grb_CORTCold + grb_ControlCold)),3)`) or the hormone (_L. delicata_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((drr_ControlCold + drr_ControlHot + drb_ControlCold + drb_ControlHot) - (drr_CORTCold + drr_CORTHot + drb_CORTCold + drb_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((drr_ControlCold + drr_ControlHot + drb_ControlCold + drb_ControlHot) - (drr_CORTCold + drr_CORTHot + drb_CORTCold + drb_CORTHot)), 3)`;_L. guichenoti_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((grr_ControlCold + grr_ControlHot + grb_ControlCold + grb_ControlHot)-(grr_CORTCold + grr_CORTHot + grb_CORTCold + grb_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((grr_ControlCold + grr_ControlHot + grb_ControlCold + grb_ControlHot)-(grr_CORTCold + grr_CORTHot + grb_CORTCold + grb_CORTHot)), 3)`) when groups were pooled. Finally, we did not find any significant differences when we compared the estimated slopes between species for the reversal task (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((drr_CORTCold + drr_ControlCold + drr_CORTHot + drr_ControlHot + drb_CORTCold + drb_ControlCold + drb_CORTHot + drb_ControlHot) - (grr_CORTCold + grr_ControlCold + grr_CORTHot + grr_ControlHot + grb_CORTCold + grb_ControlCold + grb_CORTHot + grb_ControlHot)), 3)`, p-value = `r format_dec(pmcmc((drr_CORTCold + drr_ControlCold + drr_CORTHot + drr_ControlHot + drb_CORTCold + drb_ControlCold + drb_CORTHot + drb_ControlHot) - (grr_CORTCold + grr_ControlCold + grr_CORTHot + grr_ControlHot + grb_CORTCold + grb_ControlCold + grb_CORTHot + grb_ControlHot)), 3)`). 
+We did not find any significant differences between treatments in _L. delicata_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean(deli_ControlCold - deli_CORTCold), 3)`, p- value = `r format_dec(pmcmc(deli_ControlCold - deli_CORTCold), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean((deli_ControlHot + drb_ControlHot) - (deli_CORTHot + drb_CORTHot)), 3)`, p- value = `r format_dec(pmcmc((deli_ControlHot + drb_ControlHot) - (deli_CORTHot + drb_CORTHot)), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean((deli_ControlHot + drb_ControlHot) - (deli_ControlCold + drb_ControlCold)), 3)`, p-value = `r format_dec(pmcmc((deli_ControlHot + drb_ControlHot) - (deli_ControlCold + drb_ControlCold)), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean((deli_CORTHot + drb_CORTHot) - (deli_CORTCold + drb_CORTCold)), 3)`, p-value = `r format_dec(pmcmc((deli_CORTHot + drb_CORTHot) - (deli_CORTCold + drb_CORTCold)), 3)`) (see @Figdeli) or _L. guichenoti_ ('Control-Cold' - 'CORT-Cold' = `r format_dec(mean((guich_ControlCold + grb_ControlCold) - (guich_CORTCold + grb_CORTCold)), 3)`, p- value = `r format_dec(pmcmc((guich_ControlCold + grb_ControlCold) - (guich_CORTCold + grb_CORTCold)), 3)`; 'Control-Hot' - 'CORT-Hot' = `r format_dec(mean((guich_ControlHot + grb_ControlHot) - (guich_CORTHot + grb_CORTHot)), 3)`, p- value = `r format_dec(pmcmc((guich_ControlHot + grb_ControlHot) - (guich_CORTHot + grb_CORTHot)), 3)`; 'Control-Hot' - 'Control-Cold' = `r format_dec(mean((guich_ControlHot + grb_ControlHot) - (guich_ControlCold + grb_ControlCold)), 3)`, p-value = `r format_dec(pmcmc((guich_ControlHot + grb_ControlHot) - (guich_ControlCold + grb_ControlCold)), 3)`; 'CORT-Hot' - 'CORT-Cold' = `r format_dec(mean((guich_CORTHot + grb_CORTHot) - (guich_CORTCold + grb_CORTCold)), 3)`, p-value = `r format_dec(pmcmc((guich_CORTHot + grb_CORTHot) - (guich_CORTCold + grb_CORTCold)), 3)`) (see @Figguich). We did not find any effect of incubation temperature (_L. delicata_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((deli_CORTHot + deli_ControlHot + drb_CORTHot + drb_ControlHot) - (deli_CORTCold + deli_ControlCold + drb_CORTCold + drb_ControlCold)),3)`, p-value = `r format_dec(pmcmc((deli_CORTHot + deli_ControlHot + drb_CORTHot + drb_ControlHot) - (deli_CORTCold + deli_ControlCold + drb_CORTCold + drb_ControlCold)),3)`; _L. guichenoti_: 'Hot' learning slope - 'Cold' learning slope = `r format_dec(mean((guich_CORTHot + guich_ControlHot + grb_CORTHot + grb_ControlHot) -(guich_CORTCold + guich_ControlCold + grb_CORTCold + grb_ControlCold)),3)`, p-value = `r format_dec(pmcmc((guich_CORTHot + guich_ControlHot + grb_CORTHot + grb_ControlHot) -(guich_CORTCold + guich_ControlCold + grb_CORTCold + grb_ControlCold)),3)`) or the hormone (_L. delicata_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((deli_ControlCold + deli_ControlHot + drb_ControlCold + drb_ControlHot) - (deli_CORTCold + deli_CORTHot + drb_CORTCold + drb_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((deli_ControlCold + deli_ControlHot + drb_ControlCold + drb_ControlHot) - (deli_CORTCold + deli_CORTHot + drb_CORTCold + drb_CORTHot)), 3)`;_L. guichenoti_: 'Control' learning slope - 'CORT' learning slope = `r format_dec(mean((guich_ControlCold + guich_ControlHot + grb_ControlCold + grb_ControlHot)-(guich_CORTCold + guich_CORTHot + grb_CORTCold + grb_CORTHot)), 3)`, p-value = `r format_dec(pmcmc((guich_ControlCold + guich_ControlHot + grb_ControlCold + grb_ControlHot)-(guich_CORTCold + guich_CORTHot + grb_CORTCold + grb_CORTHot)), 3)`) when groups were pooled. Finally, we did not find any significant differences when we compared the estimated slopes between species for the reversal task (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot + drb_CORTCold + drb_ControlCold + drb_CORTHot + drb_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot + grb_CORTCold + grb_ControlCold + grb_CORTHot + grb_ControlHot)), 3)`, p-value = `r format_dec(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot + drb_CORTCold + drb_ControlCold + drb_CORTHot + drb_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot + grb_CORTCold + grb_ControlCold + grb_CORTHot + grb_ControlHot)), 3)`). 
 
 ## Discussion
 
