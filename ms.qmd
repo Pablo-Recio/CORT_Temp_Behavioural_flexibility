@@ -226,19 +226,11 @@ cat("\\newpage")
 ```{r, residuals}
 # Chunk for calling all the models and making the residuals
 ## L. delicata
-### Red
-mod_dr <- readRDS(here("output/models/deli_red.rds"))
-resid_dr <- residuals(mod_dr)
-### Blue
-mod_db <- readRDS(here("output/models/deli_blue.rds"))
-resid_db <- residuals(mod_db)
+mod_deli <- readRDS(here("output/models/deli.rds"))
+resid_deli <- residuals(mod_deli)
 ## L. guichenoti
-### Red
-mod_gr <- readRDS(here("output/models/guich_red.rds"))
-resid_gr <- residuals(mod_gr)
-### Blue
-mod_gb <- readRDS(here("output/models/guich_blue.rds"))
-resid_gb <- residuals(mod_gb)
+mod_guich <- readRDS(here("output/models/guich.rds"))
+resid_guich <- residuals(mod_guich)
 ```
 
 Model formula for the reversal task is:  
