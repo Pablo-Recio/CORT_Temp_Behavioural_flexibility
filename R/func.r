@@ -27,9 +27,11 @@ sample <- function(df, sp, corti, therm){
 #' @description Fit brm models for different the associative task
 #' @param df To select the df
 #' @param sp To select the species of interest ("deli"/"guich")
+#' @param com To select whether the analyses are done for the full dataset ("complete") or for only those lizards 
+# that met the learning criterion ("suppl")
 #' @param refit To choose whether to refit the models (TRUE, default) or use the ones already made (FALSE)
 #' @return Raw posteriors of fitted brm model for each treatment, species, and group (df)
-fit_m <- function(df, sp, refit = TRUE) {
+fit_m <- function(df, sp, com, refit = TRUE) {
   formula <- (FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)) 
   #Specify species
     if (sp == "deli"){
@@ -57,10 +59,10 @@ fit_m <- function(df, sp, refit = TRUE) {
                 family = bernoulli(link = "logit"),
                 chains = 4, cores = 4, iter = 3000, warmup = 1000, control = list(adapt_delta = 0.99))
     # Write the model to a file
-    saveRDS(model, file = paste0(here("output/models/"), sp, ".rds"))
+    saveRDS(model, file = paste0(here("output/models/"), sp, com, ".rds"))
   } else {
       # Read the model from a file
-      model <- readRDS(file = paste0(here("output/models/"), sp, ".rds"))
+      model <- readRDS(file = paste0(here("output/models/"), sp, com, ".rds"))
   } 
   # Extract posteriors
   posteriors <- as_draws_df(model)

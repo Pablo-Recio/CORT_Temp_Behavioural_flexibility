@@ -88,10 +88,10 @@ Originally, we started with 96 lizards, 48 per species and 12 per treatment per 
 source(here("R", "func.R"))
 # Model formula: FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)
 ## A) L. delicata
-deli <- fit_m(clean_df, "deli", refit = FALSE)
+deli <- fit_m(clean_df, "deli", "complete",  refit = FALSE)
 write.csv(deli, file= "./output/Checking/deli.csv")
 ## B) L. guichenoti
-guich <- fit_m(clean_df, "guich", refit = FALSE)
+guich <- fit_m(clean_df, "guich", "complete", refit = FALSE)
 write.csv(guich, file= "./output/Checking/guich.csv")
 ```
 
@@ -131,7 +131,7 @@ mean <- format_dec(sapply(estimates, mean), 3)
 interval_025 <- format_dec(sapply(estimates, function(x) quantile(x,0.025)), 3)
 interval_975 <- format_dec(sapply(estimates, function(x) quantile(x,0.975)), 3)
 intervals <- paste(interval_025, interval_975, sep = " , ")
-pvalue <- format_dec(sapply(estimates, pmcmc), 3)
+pvalue <- format_dec(sapply(estimates, pmcmc), 4)
 #
 # Building the df
 table_df <- data.frame(
@@ -259,10 +259,10 @@ cat("\\newpage")
 ```{r, residuals}
 # Chunk for calling all the models and making the residuals
 ## L. delicata
-mod_deli <- readRDS(here("output/models/deli.rds"))
+mod_deli <- readRDS(here("output/models/delicomplete.rds"))
 resid_deli <- residuals(mod_deli)
 ## L. guichenoti
-mod_guich <- readRDS(here("output/models/guich.rds"))
+mod_guich <- readRDS(here("output/models/guichcomplete.rds"))
 resid_guich <- residuals(mod_guich)
 ```
 
@@ -283,4 +283,162 @@ cat("\\newpage")
 ```{r , plotmod_grr, out.width="70%", fig.align="center"}
 bayes_R2(mod_guich)
 plot(mod_guich)
+```
+
+```{r, results='asis', echo=FALSE}
+cat("\\newpage")
+```
+
+#### Results employing only those individuals that passed a learning criterion of 80% correct choices in the last 10 trials of the associative task  
+
+```{r, cleandata2}
+#| label: cleandata2
+# Cleaning the data to select only those individuals that passed a learning criterion of 80% correct choices in the last 10 trials of the associative task.
+data <- read.csv(here("data/Learning.csv"))
+percentage_per_lizard <- data %>%
+  filter(trial_associative > 25 & trial_associative <= 35) %>%
+  group_by(lizard_id) %>%
+  summarise(percentage = mean(FC_associative == 1))
+# Filter lizards where the percentage is at least 80%
+filtered_lizards <- percentage_per_lizard %>%
+  filter(percentage >= 0.8)
+# Subset the original dataset based on the filtered lizard IDs
+clean_df_2 <- data %>%
+  filter(lizard_id %in% filtered_lizards$lizard_id) %>%
+  filter(sum(is.na(FC_reversal)) <= 15) %>%
+    mutate(temp = gsub("[AB]_", "", trt),
+          cort = gsub("_[2][38]", "", trt))  %>%
+    mutate(temp = factor(temp,
+      levels = c("23", "28"),
+      labels = c("23" = "Cold", "28" = "Hot"))) %>%
+    mutate(cort = factor(cort,
+      levels = c("B", "A"),
+      labels = c("B" = "CORT", "A" = "Control"))) %>%
+    mutate(trial_reversal=as.numeric(trial_reversal)) %>%
+  data.frame()
+```
+
+```{r, sampleSize2}
+#| label: sampleSize2
+# List with the sample sizes from the database (here("output/databases_clean/data_asso.csv") as the sample size per species and group is the same on each task. We used function sample (see func.R) to estimate the sample size per treatment and species.
+source(here("R", "func.R"))
+#
+specie <- c("delicata", "guichenoti")
+hormone <- c("CORT", "Control")
+temperature <- c("Cold", "Hot")
+#
+n_list_2 <- list()
+for(i in 1:length(specie)){
+  for(k in 1:length(hormone)){
+    for(l in 1:length(temperature)){
+      n_list_2[[paste(specie[i], hormone[k], temperature[l], sep = "_")]] <- sample(clean_df_2, specie[i], hormone[k], temperature[l])
+      }
+    }
+  }
+```
+
+```{r, models2}
+#| label: models2
+# Fitting the model and extraction of posteriors for both types of task and species using fit_m function (see func.r in R folder). The result everytime the function is used is a df with the posteriors of the model. The functions saves the model automatically in output/models; and when the parameter refit = FALSE then the posteriors are extracted from the model previously written instead of fitting the model again each time.
+source(here("R", "func.R"))
+# Model formula: FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)
+## A) L. delicata
+deli_2 <- fit_m(clean_df_2, "deli", "suppl", refit = FALSE)
+write.csv(deli_2, file= "./output/Checking/deli.csv")
+## B) L. guichenoti
+guich_2 <- fit_m(clean_df_2, "guich", "suppl", refit = FALSE)
+write.csv(guich_2, file= "./output/Checking/guich.csv")
+```
+
+```{r, resultsRev2}
+# Rename some of the posteriors and make new estimates for the learning rate for the Reversal task doing the same thing we did in the chunk above.
+## 1) L. delicata
+deli_CORTCold_2 <- deli_2$b_trial_reversal
+deli_ControlCold_2 <- (deli_2$'b_trial_reversal:cortControl' + deli_2$b_trial_reversal)
+deli_CORTHot_2 <- (deli_2$'b_trial_reversal:tempHot' + deli_2$b_trial_reversal)
+deli_ControlHot_2 <- (deli_2$'b_trial_reversal:cortControl:tempHot' + deli_2$b_trial_reversal + deli_2$'b_trial_reversal:cortControl' + deli_2$'b_trial_reversal:tempHot')
+## 2) L. guichenoti
+guich_CORTCold_2 <- guich_2$b_trial_reversal
+guich_ControlCold_2 <- (guich_2$'b_trial_reversal:cortControl' + guich_2$b_trial_reversal)
+guich_CORTHot_2 <- (guich_2$'b_trial_reversal:tempHot' + guich_2$b_trial_reversal)
+guich_ControlHot_2 <- (guich_2$'b_trial_reversal:cortControl:tempHot' + guich_2$b_trial_reversal + guich_2$'b_trial_reversal:cortControl' + guich_2$'b_trial_reversal:tempHot')
+```
+
+```{r, tbl-data_2}
+#| label: tbl-data
+#| tbl-cap: "Estimates of Associative learning slope for all the different treatments per each task, species and group. Mean shows the aritmetic mean of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All p-values were obtained using pmcmc and test the hypothesis that the mean is equal to zero. In bold, those values that are significant (p-value <0.05)"
+source(here("R", "func.R"))
+#
+############################## CREATING BIG DF FOR TABLE ##############################
+# Building the vectors for titles of rows and columns
+specie <- c("L. delicata", "L. guichenoti")
+treatments <- c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")
+values <- c("Mean", "95% CI", "p-value")
+# Building the vectors for estimated means, co.intervals(95%), and p-values for the slopes obtained from posteriors. p-values are obtained using pmcmc function (see func.R), assuming a two-tailed test that testes the hypothesis that the value (slopes in this case) is 0.
+#First get estimates for both tasks
+estimates_2 <- list(
+  deli_CORTCold_2, deli_ControlCold_2, deli_CORTHot_2, deli_ControlHot_2, 
+  guich_CORTCold_2, guich_ControlCold_2, guich_CORTHot_2, guich_ControlHot_2
+)
+#
+# Then get the mean, co.intervals(95%), and p-values
+mean_2 <- format_dec(sapply(estimates_2, mean), 3)
+interval_025_2 <- format_dec(sapply(estimates_2, function(x) quantile(x,0.025)), 3)
+interval_975_2 <- format_dec(sapply(estimates_2, function(x) quantile(x,0.975)), 3)
+intervals_2 <- paste(interval_025_2, interval_975_2, sep = " , ")
+pvalue_2 <- format_dec(sapply(estimates_2, pmcmc), 4)
+#
+# Building the df
+table_df_2 <- data.frame(
+  Specie = rep(specie, each = length(treatments)),
+  Treatment = rep(rep(treatments, each = 1), times = length(specie)),
+  Mean = rep(mean_2, each = 1),
+  CI = rep(intervals_2, each = 1),
+  PValue = rep(pvalue_2, each = 1)
+)
+#
+write.csv(table_df, file= "./output/Checking/df.csv")
+#
+############################## ADDING SAMPLE SIZE TO DF FOR TABLE ##############################
+# Make n_list into a df
+n_df_2 <- as.data.frame(do.call(rbind, n_list_2)) %>%
+  rename("n" = V1) %>%
+  rownames_to_column("model") %>%
+  separate(model, into = c("Specie", "cort", "temp"), sep = "_") %>%
+  unite("Treatment", c("cort", "temp"), sep = "-") %>%
+  mutate(Specie = factor(Specie,
+                  labels = c(delicata = "L. delicata", guichenoti = "L. guichenoti")),
+        Treatment = factor(Treatment,
+                   levels = c("CORT-Cold", "Control-Cold", "CORT-Hot","Control-Hot")))
+# Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
+new_table_df_2 <- merge(table_df_2, n_df_2) %>%
+  rename('p-value' = 'PValue', '95% CI' = 'CI') %>% #Change the names of the columns for the table
+  select(Specie, Treatment, Mean, `95% CI`, `p-value`, n) %>% #To order the columns in the way I want for the table
+  mutate(Specie = factor(Specie,
+                  levels = c("L. delicata", "L. guichenoti")),
+        Treatment = factor(Treatment, 
+                  levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")))%>%
+  arrange(Specie, Treatment) %>% # To arrange the rows the way I want
+  unite("Treatment", c("Treatment", "n"), sep = " (n = ") %>%
+  mutate(Treatment = paste0(Treatment, ")"))
+write.csv(new_table_df, file= "./output/Checking/new_table_data.csv")
+#
+############################## MAKING THE TABLE ##############################
+## Table format
+set_flextable_defaults(
+ font.family = "Times New Roman",
+ fint.size = 10)
+# Split the table_data df by task
+real_table_2 <- flextable(new_table_df_2) %>%
+    bold(~ `p-value` < 0.05, ~ `p-value` + Mean + `95% CI`) %>%
+    set_table_properties(width = 1) %>%
+    align(align="center", part="all") %>% 
+    set_header_labels(Mean = "Mean",
+                      `95% CI` = "95% CI",
+                      `p-value` = "p-value") %>%
+    italic(j = 1, italic = TRUE, part = "body") %>% # To have names od species in italics
+    flextable::compose(i = c(2:4,6:8), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
+    hline(i = 4, j = c(1:5), part = "body") %>% # To make some horizontal lines
+    autofit() 
+real_table_2
 ```

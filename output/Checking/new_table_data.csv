@@ -1,9 +1,9 @@
 "","Specie","Treatment","Mean","95% CI","p-value"
-"1","L. delicata","CORT-Cold (n = 4)",0.052,"0.022 , 0.083",0.001
-"2","L. delicata","Control-Cold (n = 5)",0.066,"0.037 , 0.096",0
-"3","L. delicata","CORT-Hot (n = 3)",0.073,"0.035 , 0.112",0
-"4","L. delicata","Control-Hot (n = 7)",0.045,"0.022 , 0.069",0
-"5","L. guichenoti","CORT-Cold (n = 3)",0.068,"0.013 , 0.125",0.023
-"6","L. guichenoti","Control-Cold (n = 3)",0.086,"0.028 , 0.148",0.003
-"7","L. guichenoti","CORT-Hot (n = 5)",0.072,"0.029 , 0.115",0.002
-"8","L. guichenoti","Control-Hot (n = 7)",0.066,"0.03 , 0.104",0.001
+"1","L. delicata","CORT-Cold (n = 11)",0.04,"0.023 , 0.059",0
+"2","L. delicata","Control-Cold (n = 12)",0.062,"0.045 , 0.081",0
+"3","L. delicata","CORT-Hot (n = 12)",0.057,"0.039 , 0.075",0
+"4","L. delicata","Control-Hot (n = 12)",0.045,"0.027 , 0.063",0
+"5","L. guichenoti","CORT-Cold (n = 10)",0.048,"0.026 , 0.073",5e-04
+"6","L. guichenoti","Control-Cold (n = 7)",0.061,"0.032 , 0.093",3e-04
+"7","L. guichenoti","CORT-Hot (n = 10)",0.065,"0.04 , 0.09",0
+"8","L. guichenoti","Control-Hot (n = 10)",0.062,"0.038 , 0.089",0
