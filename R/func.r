@@ -30,7 +30,7 @@ sample <- function(df, sp, corti, therm){
 #' @param refit To choose whether to refit the models (TRUE, default) or use the ones already made (FALSE)
 #' @return Raw posteriors of fitted brm model for each treatment, species, and group (df)
 fit_m <- function(df, sp, refit = TRUE) {
-  formula <- (FC_reversal ~ 1 + (1 + trial_reversal|lizard_id)) 
+  formula <- (FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)) 
   #Specify species
     if (sp == "deli"){
       sp_data <- df %>%
@@ -66,10 +66,27 @@ fit_m <- function(df, sp, refit = TRUE) {
   posteriors <- as_draws_df(model)
   return(posteriors)
 }
-####################
-####################
-# Function to estimate the intercepts or slope per individual and sd
-
+###################
+###################
+# Tidy estimates from fit_m
+#' @title tidy_post
+#' @description The df obtained by fit_m contains the estimates of the Intercept and fixed effects of "Choice ~ trial (1 + lizard)"
+#' for each treatment, species, and group,but it extracts the estimates of the four chains, each chain in a column, here we want to
+#' tidy up to two columns (Intercept and trial), plus the ones indicating species, group, tand treatment
+#' @param df Dataframe used
+#' @return Same df but tidy
+tidy_post <- function(df) {
+  # Select data
+  data <- df
+  # Split original df into four by chain, and give the columns a common name
+  res1 <- data%>%select(matches("^X1.b_"),treatment_level, species_level,bias_level)%>%rename_all(~sub("^X1.b_", "", .))
+  res2 <- data%>%select(matches("^X2.b_"),treatment_level, species_level,bias_level)%>%rename_all(~sub("^X2.b_", "", .))
+  res3 <- data%>%select(matches("^X3.b_"),treatment_level, species_level,bias_level)%>%rename_all(~sub("^X3.b_", "", .))
+  res4 <- data%>%select(matches("^X4.b_"),treatment_level, species_level,bias_level)%>%rename_all(~sub("^X4.b_", "", .))
+  # Bind data again
+  new_df <- bind_rows(res1, res2,res3,res4)
+return(new_df) 
+}
 ####################
 ####################
 # Estimate p-values using pmcm
