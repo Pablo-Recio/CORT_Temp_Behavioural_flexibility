@@ -425,6 +425,11 @@ n_df_2 <- as.data.frame(do.call(rbind, n_list_2)) %>%
                   labels = c(delicata = "L. delicata", guichenoti = "L. guichenoti")),
         Treatment = factor(Treatment,
                    levels = c("CORT-Cold", "Control-Cold", "CORT-Hot","Control-Hot")))
+# Estimate total sample size per species and number of observations (this will allow to include this data in the first column of the table)
+n_deli_2 <- n_list_2$delicata_CORT_Cold+n_list_2$delicata_Control_Cold+n_list_2$delicata_CORT_Hot+n_list_2$delicata_Control_Hot
+ob_deli_2 <- sum(clean_df_2$species == "delicata", na.rm = TRUE)
+n_guich_2 <- n_list_2$guichenoti_CORT_Cold+n_list_2$guichenoti_Control_Cold+n_list_2$guichenoti_CORT_Hot+n_list_2$guichenoti_Control_Hot
+ob_guich_2 <- sum(clean_df_2$species == "guichenoti", na.rm = TRUE)
 # Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
 new_table_df_2 <- merge(table_df_2, n_df_2) %>%
   rename('p-value' = 'PValue', '95% CI' = 'CI') %>% #Change the names of the columns for the table
@@ -451,8 +456,12 @@ real_table_2 <- flextable(new_table_df_2) %>%
     set_header_labels(Mean = "Mean",
                       `95% CI` = "95% CI",
                       `p-value` = "p-value") %>%
-    italic(j = 1, italic = TRUE, part = "body") %>% # To have names od species in italics
+    italic(i = c(1,5), j = 1, italic = TRUE, part = "body") %>% # To have names od species in italics
     flextable::compose(i = c(2:4,6:8), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
+    flextable::compose(i = 2, j = 1, value = as_paragraph(sprintf("N = %d", n_deli_2)), part = "body") %>% # To write the delicata sample size
+    flextable::compose(i = 6, j = 1, value = as_paragraph(sprintf("N = %d", n_guich_2)), part = "body") %>% # To write the guichenoti sample size
+    flextable::compose(i = 3, j = 1, value = as_paragraph(sprintf("Obs = %d", ob_deli_2)), part = "body") %>% # To write the delicata total observations
+    flextable::compose(i = 7, j = 1, value = as_paragraph(sprintf("Obs = %d", ob_guich_2)), part = "body") %>% # To write the guichenoti total observations
     hline(i = 4, j = c(1:5), part = "body") %>% # To make some horizontal lines
     autofit() 
 real_table_2
