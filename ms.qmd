@@ -20,7 +20,7 @@ editor_options:
 
 ```{r}
 #| label: setup
-pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4, zoo, lmerTest, broom, tidybayes, ggh4x)
+pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4, zoo, lmerTest, broom, tidybayes, ggh4x, PupillometryR, cowplot)
 ```
 
 ## Introduction
@@ -34,7 +34,7 @@ Here, we studied the interactive effects of prenatal temperature and CORT on beh
 To manipulate early thermal environment and CORT, we collected eggs of _L. delicata_ and _L. guichenoti_ from a lab breeding colony that was established from a Sydney population in 2019. The Sydney population is thought to be the source population for invasive populations established on Lord Howe Island [@chapple2016origin]. Eggs were topically supplied with 5µL of CORT dissolved in 100% Ethanol (CORT treatment) or the same volume of the vehicle (Control) and were then incubated at different temperatures (Cold – 23ºC ± 3ºC or Hot – 30ºC ± 3ºC) until hatching in a fully factorial design. For full details of breeding colony and husbandry see Supplementary Material.  
 
 #### Quantifying Behavioural Flexibility  
-Briefly, the learning test was divided in three main phases: a habituation phase where lizards had to learn to eat a frozen-thawed cricket from white 3D-printed PLA ramps (9 L x 4 W x 5 H cm). The habituation phase lasted 38 days. This was followed by a colour association task where lizards had to associate the food reward with one of two colours (red or blue) (@fig-Methods Associative task). The associative learning task lasted 35 days. Finally, to quantify behavioural flexibility, we reversed the previously trained colour (red or blue) so that they needed to learn to associate the food with the opposite colour (@fig-Methods Reversal task). The reversal learning task lasted a total of 40 days. Lizards were tested once daily between 11 to 12 am when they were most active.  
+Briefly, the learning test was divided in three main phases: a habituation phase where lizards had to learn to eat a frozen-thawed cricket from white 3D-printed polylactic acid (PLA) ramps (9 L x 4 W x 5 H cm). The habituation phase lasted 38 days. This was followed by a colour association task where lizards had to associate the food reward with one of two colours (red or blue) (@fig-Methods Associative task). The associative learning task lasted 35 days. Finally, to quantify behavioural flexibility, we reversed the previously trained colour (red or blue) so that they needed to learn to associate the food with the opposite colour (@fig-Methods Reversal task). The reversal learning task lasted a total of 40 days. Lizards were tested once daily between 11 to 12 am when they were most active.  
 In associative and reversal tasks we used three different ramps that were identical in size and shape to the ones for the habituation phase. The colours of the ramps were green, red, and blue, as previous studies demonstrate that squamates can discriminate between these colours [@Baden_Osorio_2019_Vert_vision]. To avoid the influence of chemical cues, we placed the food reward in all three ramps, but in two of them the cricket was covered by immovable small lids with holes on the top. To control for potential colour biases, we assigned one group of lizards within each treatment to associate food in the blue ramp followed by the red ramp in the reversal, while in the other group the order was reversed. In all trials, the position of the feeders was changed randomly to ensure subjects were using colour rather than spatial cues for the association.  
 We recorded whether the animal chose the correct ramp first or not. We considered that a choice was made if the head of the lizard was inside the well of one of the ramps. We considered a trial failed if there was no choice in one hour of recording and those trials. Here, we analysed the data of the reversal task as a measure of behavioural flexibility [@brown2010behavioral].  
 
@@ -195,27 +195,16 @@ real_table <- flextable(new_table_df) %>%
 knitr::knit_print(real_table)
 ```
 
- We found that the learning slopes for all treatments and species were higher from zero (@tbl-data), but we did not find any difference between treatments or species in the learning rate (@fig-results). For _L. delicata_, we did not find any significant effects of the hormone (Control - CORT = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p-value = `r format_p(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p-value = `r format_p(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`).  
- For _L. guichenoti_, we did not find any significant effects of the hormone (Control - CORT = `r format_dec(mean((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`, p-value = `r format_p(pmcmc((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p-value = `r format_p(pmcmc((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`).  
-Finally, when all individuals from all the treatments were pooled together and species were compared, there were not significant differences in the estimated slopes (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p-value = `r format_p(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`).  
- 
- 
-There were not significant differences between treatments in _L. delicata_ (Control-Cold - CORT-Cold = `r format_dec(mean(deli_ControlCold - deli_CORTCold), 3)`, p- value = `r format_dec(pmcmc(deli_ControlCold - deli_CORTCold), 3)`; Control-Hot - CORT-Hot = `r format_dec(mean(deli_ControlHot - deli_CORTHot), 3)`, p- value = `r format_dec(pmcmc(deli_ControlHot - deli_CORTHot), 3)`; Control-Hot - Control-Cold = `r format_dec(mean(deli_ControlHot - deli_ControlCold), 3)`, p-value = `r format_p(pmcmc(deli_ControlHot - deli_ControlCold), 3)`; CORT-Hot - CORT-Cold = `r format_dec(mean(deli_CORTHot - deli_CORTCold), 3)`, p-value = `r format_p(pmcmc(deli_CORTHot - deli_CORTCold), 3)`) (see @fig-results) or _L. guichenoti_ (Control-Cold - CORT-Cold = `r format_dec(mean(guich_ControlCold - guich_CORTCold), 3)`, p- value = `r format_dec(pmcmc(guich_ControlCold - guich_CORTCold), 3)`; Control-Hot - CORT-Hot = `r format_dec(mean(guich_ControlHot - guich_CORTHot), 3)`, p- value = `r format_dec(pmcmc(guich_ControlHot - guich_CORTHot), 3)`; Control-Hot - Control-Cold = `r format_dec(mean(guich_ControlHot - guich_ControlCold), 3)`, p-value = `r format_p(pmcmc(guich_ControlHot - guich_ControlCold), 3)`; CORT-Hot - CORT-Cold = `r format_dec(mean(guich_CORTHot - guich_CORTCold), 3)`, p-value = `r format_p(pmcmc(guich_CORTHot - guich_CORTCold), 3)`) (see @fig-results).
-We compared each factor (hormone and incubation temperature) separately by pooling together the observations for all the individuals from the same hormone treatment or the same incubation temperature. In this regard, we did not find any significant effect of the hormone treatment (_L. delicata_: Control learning slope - CORT learning slope = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p-value = `r format_p(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`; _L. guichenoti_: Control learning slope - CORT learning slope = `r format_dec(mean((guich_ControlCold + guich_ControlHot)-(guich_CORTCold + guich_CORTHot)), 3)`, p-value = `r format_p(pmcmc((guich_ControlCold + guich_ControlHot)-(guich_CORTCold + guich_CORTHot)), 3)`) or the incubation temperature (_L. delicata_: Hot learning slope - Cold learning slope = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p-value = `r format_p(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`; _L. guichenoti_: Hot learning slope - Cold learning slope = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p-value = `r format_p(pmcmc((guich_CORTHot + guich_ControlHot) -(guich_CORTCold + guich_ControlCold)),3)`) in either species.
-Finally, when all individuals from all the treatments were pooled together and species were compared, there were not significant differences in the estimated slopes (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p-value = `r format_p(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`).   
+We found that the learning slopes for all treatments and species were higher from zero (@tbl-data), but we did not find any difference between treatments or species in the learning rate.  
+For _L. delicata_, we did not find any significant effects of the hormone (Control - CORT = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p-value = `r format_p(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p-value = `r format_p(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`) (see @fig-deli).      
 
-```{r, fig-results}
-#| label: fig-results
-#| fig.cap: "Predicted probability of choosing the correct feeder first over trials. The lines represent the mean predicted probability of choosing the correct feeder first, and the shaded areas represent the standard deviation of the mean; both obtained by using the slope and intercept estimates from the posterior distributions. The different colours represent the different treatments."
+```{r, fig-deli}
+#| label: fig-deli
+#| fig.cap: "Results for L. delicata. A) Predicted probability of choosing the correct feeder first over trials. The lines represent the mean predicted probability of choosing the correct feeder first, and the shaded areas represent the standard deviation of the mean; both obtained by using the slope and intercept estimates from the posterior distributions. The different colours represent the different treatments. B) Distribution of the estimates of the slopes per each treatment. The x-axis represents the estimates of the slopes, and the y-axis represents the density of the estimates. The different colours represent the different treatments."
 source(here("R", "func.R"))
-# First step, create the dfs for all models
-## 1) L. delicata
-df_deli <- df_fig(as.data.frame(deli), "L. delicata")
-## 2) L. guichenoti
-df_guich <- df_fig(as.data.frame(guich), "L. guichenoti")
+# Create the dfs for the probability plot A) (df_prob)
 #
-# Second step, merge the df into a big Fig_df
-Fig_df <- rbind(df_deli, df_guich) %>%
+df_deliA <- df_fig(as.data.frame(deli), "L. delicata") %>%
   mutate(Trial = gsub("X", "", Trial)) %>%
   mutate(Trial = as.numeric(Trial)) %>%
   group_by(Trial, Treatment, Species) %>%
@@ -228,13 +217,96 @@ Fig_df <- rbind(df_deli, df_guich) %>%
     Treatment = factor(Treatment,
                         levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")),
     ) %>%
+    select(-Species) %>%
 data.frame()
-write.csv(Fig_df, file= "./output/Checking/Fig_df.csv")
-# Make the plot
-figure_results <- plotting(Fig_df)
-ggsave("./output/figures/figure_results.png", plot=figure_results, width = 18, height = 20, units = "cm", dpi = 3000)
-knitr::include_graphics("./output/figures/figure_results.png")
+#
+# Create the df for the violin plots in plot B) (df_violin)
+deliB_list <- list(
+  'CORT-Cold' = deli_CORTCold,
+  'Control-Cold' = deli_ControlCold,
+  'CORT-Hot' = deli_CORTHot,
+  'Control-Hot' = deli_ControlHot)
+df_deliB1 <- data.frame(
+  Value = unlist(deliB_list),
+  Treatment = factor(rep(names(deliB_list), each = length(deli_CORTCold)))
+)
+#
+# Create the df for the points and bars in plot B) (df_points)
+df_deliB2 <- df_deliB1 %>%
+  group_by(Treatment) %>%
+  summarize(
+    Mean = mean(Value),
+    SE = (sd(Value)/sqrt(length(Value))),
+    SD = sd(Value)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    Treatment = factor(Treatment,
+                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot"))
+  ) %>%
+  data.frame()
+# Make plot
+fig_deli <- plotting(df_prob = df_deliA, df_violin = df_deliB1, df_points = df_deliB2)
+ggsave("./output/figures/fig_deli.png", plot=fig_deli, width = 20, height = 10, units = "cm", dpi = 3000)
+knitr::include_graphics("./output/figures/fig_deli.png")
 ```
+
+For _L. guichenoti_, we did not find any significant effects of the hormone (Control - CORT = `r format_dec(mean((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`, p-value = `r format_p(pmcmc((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p-value = `r format_p(pmcmc((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`) (@fig-guich).    
+
+```{r, fig-guich}
+#| label: fig-guich
+#| fig.cap: "Results for L. guichenoti. A) Predicted probability of choosing the correct feeder first over trials. The lines represent the mean predicted probability of choosing the correct feeder first, and the shaded areas represent the standard deviation of the mean; both obtained by using the slope and intercept estimates from the posterior distributions. The different colours represent the different treatments. B) Distribution of the estimates of the slopes per each treatment. The x-axis represents the estimates of the slopes, and the y-axis represents the density of the estimates. The different colours represent the different treatments."
+source(here("R", "func.R"))
+# Create the dfs for the probability plot A) (df_prob)
+#
+df_guichA <- df_fig(as.data.frame(guich), "L. guichenoti") %>%
+  mutate(Trial = gsub("X", "", Trial)) %>%
+  mutate(Trial = as.numeric(Trial)) %>%
+  group_by(Trial, Treatment, Species) %>%
+  summarize(
+    Mean_Predicted_prob = mean(Value),
+    SE_Predicted_prob = sd(Value)
+    ) %>%
+  ungroup() %>%
+  mutate(
+    Treatment = factor(Treatment,
+                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")),
+    ) %>%
+    select(-Species) %>%
+data.frame()
+#
+# Create the df for the violin plots in plot B) (df_violin)
+guichB_list <- list(
+  'CORT-Cold' = guich_CORTCold,
+  'Control-Cold' = guich_ControlCold,
+  'CORT-Hot' = guich_CORTHot,
+  'Control-Hot' = guich_ControlHot)
+df_guichB1 <- data.frame(
+  Value = unlist(guichB_list),
+  Treatment = factor(rep(names(guichB_list), each = length(guich_CORTCold)))
+)
+#
+# Create the df for the points and bars in plot B) (df_points)
+df_guichB2 <- df_guichB1 %>%
+  group_by(Treatment) %>%
+  summarize(
+    Mean = mean(Value),
+    SE = (sd(Value)/sqrt(length(Value))),
+    SD = sd(Value)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    Treatment = factor(Treatment,
+                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot"))
+  ) %>%
+  data.frame()
+# Make plot
+fig_guich <- plotting(df_prob = df_guichA, df_violin = df_guichB1, df_points = df_guichB2)
+ggsave("./output/figures/fig_guich.png", plot=fig_guich, width = 20, height = 10, units = "cm", dpi = 3000)
+knitr::include_graphics("./output/figures/fig_guich.png")
+```
+
+Finally, when all individuals from all the treatments were pooled together and species were compared, there were not significant differences in the estimated slopes (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p-value = `r format_p(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`).
 
 
 ## Discussion

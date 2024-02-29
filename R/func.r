@@ -183,27 +183,57 @@ df_fig <- function(df, specie){
 }
 ####################
 ####################
-# Function to create the plot
+# Function to create the prob_plot
 #' @title plotting
-#' @param df to select the df
-plotting <- function(df){
-  plot <- ggplot(df, aes(x = Trial, y = Mean_Predicted_prob, color = Treatment)) +
+#' @param df_prob to select the df for probability (plot A)
+#' @param df_violin to select the df for the violin plot (plot B)
+#' @param df_points to select the df for the points and geom_bars (plot B)
+plotting <- function(df_prob, df_violin, df_points){
+  # First part of the plot (A), the probabilities of choosing right over trial
+  plotA <- ggplot(df_prob, aes(x = Trial, y = Mean_Predicted_prob, color = Treatment)) +
   geom_line(linewidth = 1) +
-  scale_color_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#616161")) +
+  scale_color_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#a2a2a2")) +
   geom_ribbon(aes(ymin = Mean_Predicted_prob - SE_Predicted_prob, ymax = Mean_Predicted_prob + SE_Predicted_prob, fill = Treatment), color = NA, alpha = 0.075) + 
-  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#616161")) +
+  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#a2a2a2")) +
   theme_classic() +
-  facet_wrap(Species ~ ., scale = "free_x", ncol= 1, strip.position = "right") +
-  theme(strip.placement = "outside") +
-  theme(strip.background = element_blank()) +
   labs(y = "Predicted probability of correct choice", x = "Trial") +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 5.5, "mm")) +
   theme(
     axis.title = element_text(size = 15, family = "Times"),
     axis.text = element_text(size = 10, family = "Times"),
+    legend.position = "none"
+  ) 
+  #
+  # Second part of the plot (B), the slope estimates of each treatment
+  plotB <- ggplot(df_violin, aes(x = Treatment, y = Value, fill = Treatment)) +
+  geom_flat_violin(alpha = 0.5) +
+  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#a2a2a2")) +
+  geom_point(data = df_points, aes(y = Mean, x = Treatment), position = position_dodge(width = 0.75), color = "black", fill = "black", size = 3) +
+  geom_segment(data = df_points, aes(y = Mean - SD, yend = Mean + SD, x = Treatment, xend = Treatment), size = 1.5, color = "black") +
+  coord_flip() +
+  theme_classic() +
+  labs(y = "Slope estimates", x = "Treatments") +
+  theme(plot.margin = margin(5.5, 5.5, 5.5, 5.5, "mm"),
+    axis.text.y = element_blank(),   # Remove y-axis labels
+    axis.title = element_text(size = 12, family = "Times"),
+    axis.text = element_text(size = 10, family = "Times"),
+    legend.position = "right",
     legend.title = element_text(size = 12, family = "Times"),
-    legend.text = element_text(size = 10, family = "Times"),
-    strip.text = element_text(size = 14, family = "Times", face = "italic")
-  )  
+    legend.text = element_text(size = 11, family = "Times")
+    )
+  #
+  # Combine them
+  plot <- plot_grid(plotA, plotB, labels = c("A", "B"), nrow = 1)
+  return(plot)
+}
+####################
+####################
+# Function to create the prob_plot
+#' @title plot_2
+#' @param df1 to select the df for density plot
+#' @param df2 to select the df for pointrange plot
+plot_2 <- function(df1, df2){
+  # Create the density plot
+  
   return(plot)
 }
