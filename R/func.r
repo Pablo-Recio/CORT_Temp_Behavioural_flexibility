@@ -199,7 +199,7 @@ plotting <- function(df_prob, df_violin, df_points){
   labs(y = "Predicted probability of correct choice", x = "Trial") +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 5.5, "mm")) +
   theme(
-    axis.title = element_text(size = 15, family = "Times"),
+    axis.title = element_text(size = 12, family = "Times"),
     axis.text = element_text(size = 10, family = "Times"),
     legend.position = "none"
   ) 
