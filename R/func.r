@@ -91,7 +91,7 @@ return(new_df)
 }
 ####################
 ####################
-# Estimate p-values using pmcm
+# Estimate pmcm
 #' @title pMCMC Function
 #' @param x The vector for the posterior distribution. Note that this will test the null hypothesis that the parameter of interest is significantly different from 0. 
 #' @param null A numeric value decsribing what the null hypothesis should be

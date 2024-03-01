@@ -24,7 +24,7 @@ pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4,
 ```
 
 ## Introduction
-Behavioural flexibility describes the ability of individuals to adjust behaviour adaptively in response to internal or external changes in the environment [@brown2010behavioral]. It comprises a suite of behavioural aspects like problem-solving, innovation, or alterations in one behaviour in favour of another [@brown2010behavioral]; and it is predicted to be crucial for invasion success [@wright2010behavioral; @chapple2012can; @szabo2020can]. Generally, species with greater behavioural flexibility are more likely to survive and establish in new habitats because behaving flexibly enhances their capacity to exploit new resources and face new challenges [@wright2010behavioral; @chapple2012can; @szabo2020can]. For instance, in closely related bird species successful invaders show a higher frequency of foraging innovations [@sol2000behavioural]. According to the 'adaptive flexibility hypothesis', behavioural flexibility is most relevant during introduction, establishment, and spread of an invasive population [@wright2010behavioral; @chapple2012can; @szabo2020can]. In mammals, birds, reptiles and amphibians, relative brain size has been shown to be a good predictor of behavioural flexibility and invasive success [@sol2000behavioural; @sol2002behavioural; @sol2008brain; @amiel_smart_2011]. However, the brain is also sensitive to environmental changes during the early stages of development [@zhu_prenatal_2004] creating uncertainty about how environmental insults faced by early invaders might impact behavioural flexibility and thus the probability of invasion success.    
+Behavioural flexibility describes the ability of individuals to adjust behaviour adaptively in response to internal or external changes in the environment [@brown2010behavioral]. It comprises a suite of behavioural aspects like problem-solving, innovation, or alterations in one behaviour in favour of another [@brown2010behavioral]; all cognitive abilities predicted to be crucial for invasion success [@wright2010behavioral; @chapple2012can; @szabo2020can]. Species with greater behavioural flexibility are expected to be more likely to survive and establish in new habitats because behaving flexibly enhances their capacity to exploit new resources and face new challenges [@wright2010behavioral; @chapple2012can; @szabo2020can]. For instance, in closely related bird species successful invaders show a higher frequency of foraging innovations [@sol2000behavioural]. According to the 'adaptive flexibility hypothesis', behavioural flexibility is most relevant during introduction, establishment, and spread of an invasive population [@wright2010behavioral; @chapple2012can; @szabo2020can]. In mammals, birds, reptiles and amphibians, relative brain size has been shown to be a good predictor of behavioural flexibility and invasive success [@sol2000behavioural; @sol2002behavioural; @sol2008brain; @amiel_smart_2011]. However, the brain is also sensitive to environmental changes during the early stages of development [@zhu_prenatal_2004] creating uncertainty about how environmental insults faced by early invaders might impact behavioural flexibility and thus the probability of invasion success.    
 **BETTER LINK**In this scenario, prenatal glucocorticoids (GCs) and the thermal environment can be salient factors in the study of behavioural flexibility within invasion biology. GCs are the main group of hormones related to animals’ response towards alterations in homeostasis [@sapolsky_how_2000] that may become relevant when facing new environments and their new thermal conditions [@Crino_2023]. In addition, there is evidence that developmental GCs and thermal environment can impact cognition in different taxa [@jonson1976effect; @zhu_prenatal_2004; @amiel_hotter_2012; @lui2017chronic]. For instance, young Sprague-Dawley rats treated with corticosterone (CORT) - the principal GC in rodents, birds, and reptiles [@Crino_2023] - performed worse than controls in a reversal learning task [@lui2017chronic], while cold incubation temperatures in the eastern three-lined skink resulted in significant impairments with associative and reversal learning [@clark_colour_2014]. Moreover, the cognitive effects of both factors are triggered by similar physiological mechanisms intertwined with brain development [@jonson1976effect; @coomber_independent_1997; @zhu_prenatal_2004; @amiel_effects_2017], an aspect considered essential in successful invaders [@sol2000behavioural; @sol2002behavioural; @sol2008brain; @amiel_smart_2011]. 
 Here, we studied the interactive effects of prenatal temperature and CORT on behavioural flexibility in two species with distinct histories of invasiveness, the delicate skink (_Lampropholis delicata_) and the common garden skink (_L. guichenoti_). _L. delicata_ has been succesful in colonising different areas around the globe [@baker1979rainbow; @chapple2013divergent; @chapple2015deliinvLHI], but the same is not true of _L. guichenoti_ despite the two species having similar life-histories and overlapping distributions [@chapple_know_2011; @chapple_biology_2014]. Personality has been shown to be different between these two species [@chapple_know_2011; @chapple2012can; @bezzina2014does], which could be related to general cognitive differences that are important for invasion success. Additionally, early environments are known to affect suites of morphological and behavioural traits differently in each species [**REFS**], but the interactive role of maternal CORT and early temperatures have not yet been explored. Differences in the relative impact that early environments have on behavioural flexibility may help explain differing invasion success between the two species. We predicted that _L. delicata_ would, on average, perform more proficiently in the task compared to _L. guichenoti_. We also anticipated prenatal CORT and temperature to affect the behavioural flexibility of both species, and that _L. guichenoti_ would be more impacted by the prenatal environment than _L. delicata_.
 
@@ -47,7 +47,7 @@ knitr::include_graphics("./Others/BEHFLEX_FIG_1.svg")
 ```
 
 #### Statistical analyses  
-We performed the analyses for each species separately. We fitted a total of two different Bayesian multilevel models using the brm function from the _brms_ package [@burkner2017brms] using the R extension (version 2.8.2) [@R] for Visual Studio Code. We run four parallel MCMC chains of 3000 iterations for each model, with a warmup period of 1000 iterations. We used Choice - whether the individual chose correct (1) or not (0) - as the response variable, and trial, hormone (CORT versus Control), incubation temperature (Cold versus Hot), and their interaction as fixed factors. We included a random intercept and slope (trial) for each lizard in our models. We used the posterior distributions of parameters from these models to test for differences in learning rate between treatments and species. Learning slopes were obtained using the estimates of the variable trial per each level of the hormone-temperature interaction (Treatments); values greater than zero were considered as evidence of learning, while those less or equal to zero were not. We used the pmcmc method to test whether those slopes or the comparisons between treatments (e.g. slope for CORT-Cold lizards minus CORT-Hot lizards) or species differed from zero (two-tailed tests). We considered statistical significance if p-value < 0.05.  
+We performed the analyses for each species separately. We fitted two different Bayesian multilevel models using the brm function from the _brms_ package [@burkner2017brms] using in R extension (version 2.8.2) [@R]. We ran four parallel MCMC chains of 3000 iterations for each model, with a warmup period of 1000 iterations. We modelled correct choices [correct (1) or not (0)] as the response variable, and trial, hormone (CORT versus Control), incubation temperature (Cold versus Hot), and their interaction as fixed factors. We included a random intercept and slope (trial) for each lizard in our models. We used the posterior distributions of parameters from these models to test for differences in learning rate between treatments and species. Learning slopes were obtained using the ‘trial’ estimates and its interaction with hormone and temperature treatments. Slope estimates greater than zero were considered as evidence of learning, while those less or equal to zero were not. We calculated the probability that slopes or contrasts between slopes differed from zero (pmcmc) using the posterior distributions. We considered statistical significance if p~mcmc~  < 0.05.  
  
 
 ## Results
@@ -109,27 +109,27 @@ guich_ControlHot <- (guich$'b_trial_reversal:cortControl:tempHot' + guich$b_tria
 
 ```{r, tbl-data, results='asis'}
 #| label: tbl-data
-#| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All p-values were obtained using pmcmc and tested the hypothesis that the mean equals zero. In bold, those values that are significant (p-value <0.05)"
+#| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05)"
 source(here("R", "func.R"))
 #
 ############################## CREATING BIG DF FOR TABLE ##############################
 # Building the vectors for titles of rows and columns
 specie <- c("L. delicata", "L. guichenoti")
 treatments <- c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")
-values <- c("Mean", "95% CI", "p-value")
-# Building the vectors for estimated means, co.intervals(95%), and p-values for the slopes obtained from posteriors. p-values are obtained using pmcmc function (see func.R), assuming a two-tailed test that testes the hypothesis that the value (slopes in this case) is 0.
+values <- c("Mean", "95% CI", "pmcmc")
+# Building the vectors for estimated means, co.intervals(95%), and pmcmc for the slopes obtained from posteriors, assuming a two-tailed test that testes the hypothesis that the value (slopes in this case) is 0.
 #First get estimates for both tasks
 estimates <- list(
   deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot, 
   guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot
 )
 #
-# Then get the mean, co.intervals(95%), and p-values
+# Then get the mean, co.intervals(95%), and pmcmc
 mean <- format_dec(sapply(estimates, mean), 3)
 interval_025 <- format_dec(sapply(estimates, function(x) quantile(x,0.025)), 3)
 interval_975 <- format_dec(sapply(estimates, function(x) quantile(x,0.975)), 3)
 intervals <- paste(interval_025, interval_975, sep = " , ")
-pvalue <- format_p(sapply(estimates, pmcmc), 4)
+pmcmc <- format_p(sapply(estimates, pmcmc), 4)
 #
 # Building the df
 table_df <- data.frame(
@@ -137,7 +137,7 @@ table_df <- data.frame(
   Treatment = rep(rep(treatments, each = 1), times = length(specie)),
   Mean = rep(mean, each = 1),
   CI = rep(intervals, each = 1),
-  PValue = rep(pvalue, each = 1)
+  pmcmc = rep(pmcmc, each = 1)
 )
 #
 write.csv(table_df, file= "./output/Checking/df.csv")
@@ -160,8 +160,8 @@ n_guich <- n_list$guichenoti_CORT_Cold+n_list$guichenoti_Control_Cold+n_list$gui
 ob_guich <- sum(clean_df$species == "guichenoti", na.rm = TRUE)
 # Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
 new_table_df <- merge(table_df, n_df) %>%
-  rename('p-value' = 'PValue', '95% CI' = 'CI') %>% #Change the names of the columns for the table
-  select(Specie, Treatment, Mean, `95% CI`, `p-value`, n) %>% #To order the columns in the way I want for the table
+  rename('pmcmc' = 'pmcmc', '95% CI' = 'CI') %>% #Change the names of the columns for the table
+  select(Specie, Treatment, Mean, `95% CI`, `pmcmc`, n) %>% #To order the columns in the way I want for the table
   mutate(Specie = factor(Specie,
                   levels = c("L. delicata", "L. guichenoti")),
         Treatment = factor(Treatment, 
@@ -178,12 +178,12 @@ set_flextable_defaults(
  fint.size = 10)
 # Split the table_data df by task
 real_table <- flextable(new_table_df) %>%
-    bold(~ `p-value` < 0.05, ~ `p-value` + Mean + `95% CI`) %>%
+    bold(~ `pmcmc` < 0.05, ~ `pmcmc` + Mean + `95% CI`) %>%
     set_table_properties(width = 1) %>%
     align(align="center", part="all") %>% 
     set_header_labels(Mean = "Mean",
                       `95% CI` = "95% CI",
-                      `p-value` = "p-value") %>%
+                      `pmcmc` = "pmcmc") %>%
     italic(i= c(1, 5), j = 1, italic = TRUE, part = "body") %>% # To have names of species in italics
     flextable::compose(i = c(2:4,6:8), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
     flextable::compose(i = 2, j = 1, value = as_paragraph(sprintf("N = %d", n_deli)), part = "body") %>% # To write the delicata sample size
@@ -195,8 +195,7 @@ real_table <- flextable(new_table_df) %>%
 knitr::knit_print(real_table)
 ```
 
-We found that the learning slopes for all treatments and species were higher from zero (@tbl-data), but we did not find any difference between treatments or species in the learning rate.  
-For _L. delicata_, we did not find any significant effects of the hormone (Control - CORT = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p-value = `r format_p(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p-value = `r format_p(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`, p-value = `r format_p(pmcmc((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`) (see @fig-deli).  
+Both species learnt across all treatments  (?@tbl-data), but we did not find any difference between treatments or species in the rate of learning. For _L. delicata_, hormone treatment (Control - CORT = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`) did not affect learning (see @fig-deli). We similarly found no significant effects of  hormone (Control - CORT = `r format_dec(mean((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`, p~mcmc~ = `r format_p(pmcmc((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`) on learning in _L. guichenoti_ (see @fig-guich).  
 
 ```{r, fig-deli}
 #| label: fig-deli
@@ -251,7 +250,6 @@ ggsave("./output/figures/fig_deli.png", plot=fig_deli, width = 20, height = 10, 
 knitr::include_graphics("./output/figures/fig_deli.png")
 ```
 
-For _L. guichenoti_, we did not find any significant effects of the hormone (Control - CORT = `r format_dec(mean((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`, p-value = `r format_p(pmcmc((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p-value = `r format_p(pmcmc((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`, p-value = `r format_p(pmcmc((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`) (@fig-guich).    
 
 ```{r, fig-guich}
 #| label: fig-guich
@@ -306,7 +304,7 @@ ggsave("./output/figures/fig_guich.png", plot=fig_guich, width = 20, height = 10
 knitr::include_graphics("./output/figures/fig_guich.png")
 ```
 
-Finally, when all individuals from all the treatments were pooled together and species were compared, there were not significant differences in the estimated slopes (_L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p-value = `r format_p(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`).  
+Finally, when all individuals from all the treatments were pooled together and species were compared, there were not significant differences in the estimated slopes (Mean learning slope _L. delicata_ = `r format_dec(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 3)`, 95% CI = [`r format_dec(quantile(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 0.025), 3)`, `r format_dec(quantile(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 0.975), 3)`]; Mean learning slope _L. guichenoti_ = `r format_dec(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 3)`, 95% CI = [`r format_dec(quantile(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 0.025), 3)`, `r format_dec(quantile(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 0.975), 3)`]; _L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`).  
 
 
 ## Discussion
@@ -458,27 +456,27 @@ guich_ControlHot_2 <- (guich_2$'b_trial_reversal:cortControl:tempHot' + guich_2$
 
 ```{r, tbl-data_2}
 #| label: tbl-data_2
-#| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All p-values were obtained using pmcmc and tested the hypothesis that the mean equals zero. In bold, those values that are significant (p-value <0.05)"
+#| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05)"
 source(here("R", "func.R"))
 #
 ############################## CREATING BIG DF FOR TABLE ##############################
 # Building the vectors for titles of rows and columns
 specie <- c("L. delicata", "L. guichenoti")
 treatments <- c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")
-values <- c("Mean", "95% CI", "p-value")
-# Building the vectors for estimated means, co.intervals(95%), and p-values for the slopes obtained from posteriors. p-values are obtained using pmcmc function (see func.R), assuming a two-tailed test that testes the hypothesis that the value (slopes in this case) is 0.
+values <- c("Mean", "95% CI", "pmcmc")
+# Building the vectors for estimated means, co.intervals(95%), and pmcmcm for the slopes obtained from posteriors assuming a two-tailed test that testes the hypothesis that the value (slopes in this case) is 0.
 #First get estimates for both tasks
 estimates_2 <- list(
   deli_CORTCold_2, deli_ControlCold_2, deli_CORTHot_2, deli_ControlHot_2, 
   guich_CORTCold_2, guich_ControlCold_2, guich_CORTHot_2, guich_ControlHot_2
 )
 #
-# Then get the mean, co.intervals(95%), and p-values
+# Then get the mean, co.intervals(95%), and pmcmc
 mean_2 <- format_dec(sapply(estimates_2, mean), 3)
 interval_025_2 <- format_dec(sapply(estimates_2, function(x) quantile(x,0.025)), 3)
 interval_975_2 <- format_dec(sapply(estimates_2, function(x) quantile(x,0.975)), 3)
 intervals_2 <- paste(interval_025_2, interval_975_2, sep = " , ")
-pvalue_2 <- format_p(sapply(estimates_2, pmcmc), 4)
+pmcmc_2 <- format_p(sapply(estimates_2, pmcmc), 4)
 #
 # Building the df
 table_df_2 <- data.frame(
@@ -486,7 +484,7 @@ table_df_2 <- data.frame(
   Treatment = rep(rep(treatments, each = 1), times = length(specie)),
   Mean = rep(mean_2, each = 1),
   CI = rep(intervals_2, each = 1),
-  PValue = rep(pvalue_2, each = 1)
+  pmcmc = rep(pmcmc_2, each = 1)
 )
 #
 write.csv(table_df, file= "./output/Checking/df.csv")
@@ -509,8 +507,8 @@ n_guich_2 <- n_list_2$guichenoti_CORT_Cold+n_list_2$guichenoti_Control_Cold+n_li
 ob_guich_2 <- sum(clean_df_2$species == "guichenoti", na.rm = TRUE)
 # Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
 new_table_df_2 <- merge(table_df_2, n_df_2) %>%
-  rename('p-value' = 'PValue', '95% CI' = 'CI') %>% #Change the names of the columns for the table
-  select(Specie, Treatment, Mean, `95% CI`, `p-value`, n) %>% #To order the columns in the way I want for the table
+  rename('pmcmc' = 'pmcmc', '95% CI' = 'CI') %>% #Change the names of the columns for the table
+  select(Specie, Treatment, Mean, `95% CI`, `pmcmc`, n) %>% #To order the columns in the way I want for the table
   mutate(Specie = factor(Specie,
                   levels = c("L. delicata", "L. guichenoti")),
         Treatment = factor(Treatment, 
@@ -527,12 +525,12 @@ set_flextable_defaults(
  fint.size = 10)
 # Split the table_data df by task
 real_table_2 <- flextable(new_table_df_2) %>%
-    bold(~ `p-value` < 0.05, ~ `p-value` + Mean + `95% CI`) %>%
+    bold(~ `pmcmc` < 0.05, ~ `pmcmc` + Mean + `95% CI`) %>%
     set_table_properties(width = 1) %>%
     align(align="center", part="all") %>% 
     set_header_labels(Mean = "Mean",
                       `95% CI` = "95% CI",
-                      `p-value` = "p-value") %>%
+                      `pmcmc` = "pmcmc") %>%
     italic(i = c(1,5), j = 1, italic = TRUE, part = "body") %>% # To have names od species in italics
     flextable::compose(i = c(2:4,6:8), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
     flextable::compose(i = 2, j = 1, value = as_paragraph(sprintf("N = %d", n_deli_2)), part = "body") %>% # To write the delicata sample size
