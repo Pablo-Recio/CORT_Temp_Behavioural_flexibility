@@ -137,11 +137,19 @@ format_p <- function(x, n) {
 }
 ####################
 ####################
-# Function to create each df for the figure
-#' @title df_fig
-#' @param df to select the df
-#' @param specie to add data of the specie
-df_fig <- function(df, specie){
+# Function to create each df for the probability figure (plots A, C Fig-results)
+#' @title df_plotAC
+#' @param sp to select the df, levels are deli or guich
+df_plotAC <- function(sp){
+  if (sp == "deli"){
+      df <- as.data.frame(deli)
+    } else {
+      if(sp == "guich"){
+        df <- as.data.frame(guich)
+      } else {
+        stop("Species not valid")
+      }
+    }
   # Create a vector with treatments
   treatments <- c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")
   # Create new matrix and new dfs
@@ -177,24 +185,125 @@ df_fig <- function(df, specie){
     treat_df$Treatment <- t
     fig_df <- rbind(fig_df, treat_df)
   }
-  # Add species and group information
-  fig_df$Species <- specie
+  # Transform the database for better use
+  fig_df <- fig_df %>%
+  mutate(Trial = gsub("X", "", Trial)) %>%
+  mutate(Trial = as.numeric(Trial)) %>%
+  group_by(Trial, Treatment) %>%
+  summarize(
+    Mean_Predicted_prob = mean(Value),
+    SE_Predicted_prob = sd(Value)
+    ) %>%
+  ungroup() %>%
+  mutate(
+    Treatment = factor(Treatment,
+                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")),
+    ) %>%
+data.frame()
   return(fig_df)
 }
 ####################
 ####################
-# Function to create the prob_plot
+# Function to create each df for the slopes figure (part of plots B, D Fig-results)
+#' @title df_plotBD1
+#' @param sp to select the df, levels are deli or guich
+df_plotBD1 <- function(sp){
+  if (sp == "deli"){
+      lst <- list('CORT-Cold' = deli_CORTCold,
+                  'Control-Cold' = deli_ControlCold,
+                  'CORT-Hot' = deli_CORTHot,
+                  'Control-Hot' = deli_ControlHot)
+      df_plotBD <- data.frame(Value = unlist(lst),
+        Treatment = factor(rep(names(lst), each = length(deli_CORTCold)))) %>%
+        mutate(Treatment = factor(Treatment, 
+          levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot"),
+          labels = c("CORT-Cold" = paste("CORT-Cold (n =", n_list$delicata_CORT_Cold , ")"),
+                    "Control-Cold" = paste("Control-Cold (n =", n_list$delicata_Control_Cold , ")"),
+                    "CORT-Hot" = paste("CORT-Hot (n = ", n_list$delicata_CORT_Hot , ")"),
+                    "Control-Hot" = paste("Control-Hot (n = ", n_list$delicata_Control_Hot , ")"))
+          )
+        ) %>%
+      data.frame()
+    } else {
+      if(sp == "guich"){
+        lst <- list('CORT-Cold' = guich_CORTCold,
+                    'Control-Cold' = guich_ControlCold,
+                    'CORT-Hot' = guich_CORTHot,
+                    'Control-Hot' = guich_ControlHot)
+        df_plotBD <- data.frame(Value = unlist(lst),
+          Treatment = factor(rep(names(lst), each = length(deli_CORTCold)))) %>%
+          mutate(Treatment = factor(Treatment, 
+            levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot"),
+            labels = c("CORT-Cold" = paste("CORT-Cold (n =", n_list$guichenoti_CORT_Cold , ")"),
+                      "Control-Cold" = paste("Control-Cold (n =", n_list$guichenoti_Control_Cold , ")"),
+                      "CORT-Hot" = paste("CORT-Hot (n = ", n_list$guichenoti_CORT_Hot , ")"),
+                      "Control-Hot" = paste("Control-Hot (n = ", n_list$guichenoti_Control_Hot , ")"))
+            )
+          ) %>%
+      data.frame()
+      } else {
+        stop("Species not valid")
+      }
+    }
+  return(df_plotBD)
+}
+####################
+####################
+# Function to create each df for the slopes figure (part of plots B, D Fig-results)
+#' @title df_plotBD2
+#' @param sp to select the df, levels are deli or guich
+df_plotBD2 <- function(sp){
+  if (sp == "deli"){
+      prev_BD2 <- df_deliV
+    } else {
+      if(sp == "guich"){
+      prev_BD2 <- df_guichV
+      } else {
+        stop("Species not valid")
+      }
+    }
+  df_BD2 <- prev_BD2 %>%
+  group_by(Treatment) %>%
+  summarize(
+    Mean = mean(Value),
+    SE = (sd(Value)/sqrt(length(Value))),
+    SD = sd(Value)
+  ) %>%
+  ungroup() %>%
+  data.frame()
+  return(df_BD2)
+}
+####################
+####################
+# Function to create the plot per species (A-B or C-D) for fig-results
 #' @title plotting
-#' @param df_prob to select the df for probability (plot A)
-#' @param df_violin to select the df for the violin plot (plot B)
-#' @param df_points to select the df for the points and geom_bars (plot B)
-plotting <- function(df_prob, df_violin, df_points){
-  # First part of the plot (A), the probabilities of choosing right over trial
-  plotA <- ggplot(df_prob, aes(x = Trial, y = Mean_Predicted_prob, color = Treatment)) +
+#' @param sp to select the species for the labels
+#' @param df_prob to select the df for probability (plot A, C)
+#' @param df_violin to select the df for the violin plot (plot B, D)
+#' @param df_points to select the df for the points and geom_bars (plot B, D)
+plotting <- function(sp, df_prob, df_violin, df_points){
+  # Specify labels depending on species and relevel the factor treatment for the legend
+  if(sp == "deli"){
+    lab <- c("A", "B")
+    df_violin$Treatment <- factor(df_violin$Treatment,
+      levels = c("Control-Hot (n =  12 )", "CORT-Hot (n =  12 )", "Control-Cold (n = 12 )", "CORT-Cold (n = 11 )"))
+    img <- readPNG("./Others/Deli.png")
+    note <- paste("L. delicata")
+  } else if (sp == "guich"){
+    lab <- c("C", "D")
+    df_violin$Treatment <- factor(df_violin$Treatment,
+      levels = c("Control-Hot (n =  10 )", "CORT-Hot (n =  10 )", "Control-Cold (n = 7 )", "CORT-Cold (n = 10 )"))
+    img <- readPNG("./Others/Guich.png")
+    note <- paste("L. guichenoti")
+  } else {
+    stop("Species not valid")
+  }
+  # First part of the plot (A, C), the probabilities of choosing right over trial
+  plot1 <- ggplot(df_prob, aes(x = Trial, y = Mean_Predicted_prob, color = Treatment)) +
   geom_line(linewidth = 1) +
-  scale_color_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#a2a2a2")) +
+  scale_color_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="#68bde1", "CORT-Hot"="#b52201", "Control-Hot"="#f38778")) +
   geom_ribbon(aes(ymin = Mean_Predicted_prob - SE_Predicted_prob, ymax = Mean_Predicted_prob + SE_Predicted_prob, fill = Treatment), color = NA, alpha = 0.075) + 
-  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#a2a2a2")) +
+  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="#68bde1", "CORT-Hot"="#b52201", "Control-Hot"="#f38778")) +
   theme_classic() +
   labs(y = "Predicted probability of correct choice", x = "Trial") +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 5.5, "mm")) +
@@ -204,12 +313,14 @@ plotting <- function(df_prob, df_violin, df_points){
     legend.position = "none"
   ) 
   #
-  # Second part of the plot (B), the slope estimates of each treatment
-  plotB <- ggplot(df_violin, aes(x = Treatment, y = Value, fill = Treatment)) +
+  # Second part of the plot (B, D), the slope estimates of each treatment
+  plot2 <- ggplot(df_violin, aes(x = Treatment, y = Value, fill = Treatment)) +
   geom_flat_violin(alpha = 0.5) +
-  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="cyan", "CORT-Hot"="black", "Control-Hot"="#a2a2a2")) +
+  scale_fill_manual(values = c("#f38778", "#b52201", "#68bde1", "darkblue")) +
   geom_point(data = df_points, aes(y = Mean, x = Treatment), position = position_dodge(width = 0.75), color = "black", fill = "black", size = 3) +
   geom_segment(data = df_points, aes(y = Mean - SD, yend = Mean + SD, x = Treatment, xend = Treatment), size = 1.5, color = "black") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
+  ylim(-0.015, max(df_violin$Value)) +
   coord_flip() +
   theme_classic() +
   labs(y = "Slope estimates", x = "Treatments") +
@@ -223,17 +334,8 @@ plotting <- function(df_prob, df_violin, df_points){
     )
   #
   # Combine them
-  plot <- plot_grid(plotA, plotB, labels = c("A", "B"), nrow = 1)
-  return(plot)
-}
-####################
-####################
-# Function to create the prob_plot
-#' @title plot_2
-#' @param df1 to select the df for density plot
-#' @param df2 to select the df for pointrange plot
-plot_2 <- function(df1, df2){
-  # Create the density plot
-  
+  plot <- plot_grid(plot1, plot2, labels = lab, nrow = 1, rel_widths = c(0.45, 0.45)) +
+    annotation_custom(rasterGrob(img), xmin = 0.73, xmax = 0.98, ymin = 0.73, ymax = 0.98) +
+    annotate("text", x = 0.5, y = 0.05, label = note, size = 5, color = "black", fontface = "italic")
   return(plot)
 }

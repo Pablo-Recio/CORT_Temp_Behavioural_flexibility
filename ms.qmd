@@ -20,7 +20,7 @@ editor_options:
 
 ```{r}
 #| label: setup
-pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4, zoo, lmerTest, broom, tidybayes, ggh4x, PupillometryR, cowplot)
+pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4, zoo, lmerTest, broom, tidybayes, ggh4x, PupillometryR, cowplot, png, grid)
 ```
 
 ## Introduction
@@ -107,201 +107,39 @@ guich_CORTHot <- (guich$'b_trial_reversal:tempHot' + guich$b_trial_reversal)
 guich_ControlHot <- (guich$'b_trial_reversal:cortControl:tempHot' + guich$b_trial_reversal + guich$'b_trial_reversal:cortControl' + guich$'b_trial_reversal:tempHot')
 ```
 
-```{r, tbl-data, results='asis'}
-#| label: tbl-data
-#| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05)"
-source(here("R", "func.R"))
-#
-############################## CREATING BIG DF FOR TABLE ##############################
-# Building the vectors for titles of rows and columns
-specie <- c("L. delicata", "L. guichenoti")
-treatments <- c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")
-values <- c("Mean", "95% CI", "pmcmc")
-# Building the vectors for estimated means, co.intervals(95%), and pmcmc for the slopes obtained from posteriors, assuming a two-tailed test that testes the hypothesis that the value (slopes in this case) is 0.
-#First get estimates for both tasks
-estimates <- list(
-  deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot, 
-  guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot
-)
-#
-# Then get the mean, co.intervals(95%), and pmcmc
-mean <- format_dec(sapply(estimates, mean), 3)
-interval_025 <- format_dec(sapply(estimates, function(x) quantile(x,0.025)), 3)
-interval_975 <- format_dec(sapply(estimates, function(x) quantile(x,0.975)), 3)
-intervals <- paste(interval_025, interval_975, sep = " , ")
-pmcmc <- format_p(sapply(estimates, pmcmc), 4)
-#
-# Building the df
-table_df <- data.frame(
-  Specie = rep(specie, each = length(treatments)),
-  Treatment = rep(rep(treatments, each = 1), times = length(specie)),
-  Mean = rep(mean, each = 1),
-  CI = rep(intervals, each = 1),
-  pmcmc = rep(pmcmc, each = 1)
-)
-#
-write.csv(table_df, file= "./output/Checking/df.csv")
-#
-############################## ADDING SAMPLE SIZE TO DF FOR TABLE ##############################
-# Make n_list into a df
-n_df <- as.data.frame(do.call(rbind, n_list)) %>%
-  rename("n" = V1) %>%
-  rownames_to_column("model") %>%
-  separate(model, into = c("Specie", "cort", "temp"), sep = "_") %>%
-  unite("Treatment", c("cort", "temp"), sep = "-") %>%
-  mutate(Specie = factor(Specie,
-                  labels = c(delicata = "L. delicata", guichenoti = "L. guichenoti")),
-        Treatment = factor(Treatment,
-                   levels = c("CORT-Cold", "Control-Cold", "CORT-Hot","Control-Hot")))
-# Estimate total sample size per species and number of observations (this will allow to include this data in the first column of the table)
-n_deli <- n_list$delicata_CORT_Cold+n_list$delicata_Control_Cold+n_list$delicata_CORT_Hot+n_list$delicata_Control_Hot
-ob_deli <- sum(clean_df$species == "delicata", na.rm = TRUE)
-n_guich <- n_list$guichenoti_CORT_Cold+n_list$guichenoti_Control_Cold+n_list$guichenoti_CORT_Hot+n_list$guichenoti_Control_Hot
-ob_guich <- sum(clean_df$species == "guichenoti", na.rm = TRUE)
-# Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
-new_table_df <- merge(table_df, n_df) %>%
-  rename('pmcmc' = 'pmcmc', '95% CI' = 'CI') %>% #Change the names of the columns for the table
-  select(Specie, Treatment, Mean, `95% CI`, `pmcmc`, n) %>% #To order the columns in the way I want for the table
-  mutate(Specie = factor(Specie,
-                  levels = c("L. delicata", "L. guichenoti")),
-        Treatment = factor(Treatment, 
-                  levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")))%>%
-  arrange(Specie, Treatment) %>% # To arrange the rows the way I want
-  unite("Treatment", c("Treatment", "n"), sep = " (n = ") %>%
-  mutate(Treatment = paste0(Treatment, ")"))
-write.csv(new_table_df, file= "./output/Checking/new_table_data.csv")
-#
-############################## MAKING THE TABLE ##############################
-## Table format
-set_flextable_defaults(
- font.family = "Times New Roman",
- fint.size = 10)
-# Split the table_data df by task
-real_table <- flextable(new_table_df) %>%
-    bold(~ `pmcmc` < 0.05, ~ `pmcmc` + Mean + `95% CI`) %>%
-    set_table_properties(width = 1) %>%
-    align(align="center", part="all") %>% 
-    set_header_labels(Mean = "Mean",
-                      `95% CI` = "95% CI",
-                      `pmcmc` = "pmcmc") %>%
-    italic(i= c(1, 5), j = 1, italic = TRUE, part = "body") %>% # To have names of species in italics
-    flextable::compose(i = c(2:4,6:8), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
-    flextable::compose(i = 2, j = 1, value = as_paragraph(sprintf("N = %d", n_deli)), part = "body") %>% # To write the delicata sample size
-    flextable::compose(i = 6, j = 1, value = as_paragraph(sprintf("N = %d", n_guich)), part = "body") %>% # To write the guichenoti sample size
-    flextable::compose(i = 3, j = 1, value = as_paragraph(sprintf("Obs = %d", ob_deli)), part = "body") %>% # To write the delicata total observations
-    flextable::compose(i = 7, j = 1, value = as_paragraph(sprintf("Obs = %d", ob_guich)), part = "body") %>% # To write the guichenoti total observations
-    hline(i = 4, j = c(1:5), part = "body") %>% # To make some horizontal lines
-    autofit() 
-knitr::knit_print(real_table)
-```
+Both species learnt across all treatments (@fig-results B, D), but we did not find any difference between treatments or species in the rate of learning. For _L. delicata_, hormone treatment (Control - CORT = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`) did not affect learning (see @fig-results A, B). We similarly found no significant effects of  hormone (Control - CORT = `r format_dec(mean((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`, p~mcmc~ = `r format_p(pmcmc((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`) on learning in _L. guichenoti_ (see @fig-results C, D).  
 
-Both species learnt across all treatments  (?@tbl-data), but we did not find any difference between treatments or species in the rate of learning. For _L. delicata_, hormone treatment (Control - CORT = `r format_dec(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`) did not affect learning (see @fig-deli). We similarly found no significant effects of  hormone (Control - CORT = `r format_dec(mean((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`, p~mcmc~ = `r format_p(pmcmc((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`) on learning in _L. guichenoti_ (see @fig-guich).  
-
-```{r, fig-deli}
-#| label: fig-deli
-#| fig.cap: "Results for L. delicata. A) Predicted probability of choosing the correct feeder first over trials. The lines represent the mean predicted probability of choosing the correct feeder first, and the shaded areas represent the standard deviation of the mean; both obtained by using the slope and intercept estimates from the posterior distributions. The different colours represent the different treatments. B) Distribution of the estimates of the slopes per each treatment. The x-axis represents the estimates of the slopes, and the y-axis represents the density of the estimates. The different colours represent the different treatments. Points and bars represent the mean and standard deviation of the mean of the estimates, respectively."
+```{r, fig-results}
+#| label: fig-results
+#| fig.cap: "Results for L. delicata (A,B) and L. guichenoti (C, D). A, C) Predicted probability of choosing the correct feeder first over trials. The lines represent the mean predicted probability of choosing the correct feeder first, and the shaded areas represent the standard deviation of the mean; both obtained by using the slope and intercept estimates from the posterior distributions. The different colours represent the different treatments. B, D) Distribution of the estimates of the slopes per each treatment. The x-axis represents the estimates of the slopes, and the y-axis represents the density of the estimates. The different colours represent the different treatments. Points and bars represent the mean and standard deviation of the mean of the estimates, respectively."
 source(here("R", "func.R"))
-# Create the dfs for the probability plot A) (df_prob)
-#
-df_deliA <- df_fig(as.data.frame(deli), "L. delicata") %>%
-  mutate(Trial = gsub("X", "", Trial)) %>%
-  mutate(Trial = as.numeric(Trial)) %>%
-  group_by(Trial, Treatment, Species) %>%
-  summarize(
-    Mean_Predicted_prob = mean(Value),
-    SE_Predicted_prob = sd(Value)
-    ) %>%
-  ungroup() %>%
-  mutate(
-    Treatment = factor(Treatment,
-                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")),
-    ) %>%
-    select(-Species) %>%
-data.frame()
+# Create the dfs for the probability plot A and C) (df_prob)
+# L. delicata
+df_deliprob <- df_plotAC("deli")
+# L. guichenoti
+df_guichprob <- df_plotAC("guich")
 #
 # Create the df for the violin plots in plot B) (df_violin)
-deliB_list <- list(
-  'CORT-Cold' = deli_CORTCold,
-  'Control-Cold' = deli_ControlCold,
-  'CORT-Hot' = deli_CORTHot,
-  'Control-Hot' = deli_ControlHot)
-df_deliB1 <- data.frame(
-  Value = unlist(deliB_list),
-  Treatment = factor(rep(names(deliB_list), each = length(deli_CORTCold)))
-)
+# L. delicata
+df_deliV <- df_plotBD1("deli")
+# L. guichenoti
+df_guichV <- df_plotBD1("guich")
 #
 # Create the df for the points and bars in plot B) (df_points)
-df_deliB2 <- df_deliB1 %>%
-  group_by(Treatment) %>%
-  summarize(
-    Mean = mean(Value),
-    SE = (sd(Value)/sqrt(length(Value))),
-    SD = sd(Value)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    Treatment = factor(Treatment,
-                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot"))
-  ) %>%
-  data.frame()
-# Make plot
-fig_deli <- plotting(df_prob = df_deliA, df_violin = df_deliB1, df_points = df_deliB2)
-ggsave("./output/figures/fig_deli.png", plot=fig_deli, width = 20, height = 10, units = "cm", dpi = 3000)
+# L. delicata
+df_deliP <- df_plotBD2("deli")
+# L. guichenoti
+df_guichP <- df_plotBD2("guich")
+#
+#
+# Make plots deli and guich
+source(here("R", "func.R"))
+fig_deli <- plotting(sp = "deli", df_prob = df_deliprob, df_violin = df_deliV, df_points = df_deliP)
+fig_guich <- plotting(sp = "guich", df_prob = df_guichprob, df_violin = df_guichV, df_points = df_guichP)
+# Combine plots of both species into the final figure
+fig_results <- plot_grid(fig_deli, fig_guich, ncol = 1)
+ggsave("./output/figures/fig_results.png", plot=fig_results, width = 25, height = 18, units = "cm", dpi = 600)
 knitr::include_graphics("./output/figures/fig_deli.png")
-```
-
-
-```{r, fig-guich}
-#| label: fig-guich
-#| fig.cap: "Results for L. guichenoti. A) Predicted probability of choosing the correct feeder first over trials. The lines represent the mean predicted probability of choosing the correct feeder first, and the shaded areas represent the standard deviation of the mean; both obtained by using the slope and intercept estimates from the posterior distributions. The different colours represent the different treatments. B) Distribution of the estimates of the slopes per each treatment. The x-axis represents the estimates of the slopes, and the y-axis represents the density of the estimates. The different colours represent the different treatments. Points and bars represent the mean and standard deviation of the mean of the estimates, respectively."
-source(here("R", "func.R"))
-# Create the dfs for the probability plot A) (df_prob)
-#
-df_guichA <- df_fig(as.data.frame(guich), "L. guichenoti") %>%
-  mutate(Trial = gsub("X", "", Trial)) %>%
-  mutate(Trial = as.numeric(Trial)) %>%
-  group_by(Trial, Treatment, Species) %>%
-  summarize(
-    Mean_Predicted_prob = mean(Value),
-    SE_Predicted_prob = sd(Value)
-    ) %>%
-  ungroup() %>%
-  mutate(
-    Treatment = factor(Treatment,
-                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")),
-    ) %>%
-    select(-Species) %>%
-data.frame()
-#
-# Create the df for the violin plots in plot B) (df_violin)
-guichB_list <- list(
-  'CORT-Cold' = guich_CORTCold,
-  'Control-Cold' = guich_ControlCold,
-  'CORT-Hot' = guich_CORTHot,
-  'Control-Hot' = guich_ControlHot)
-df_guichB1 <- data.frame(
-  Value = unlist(guichB_list),
-  Treatment = factor(rep(names(guichB_list), each = length(guich_CORTCold)))
-)
-#
-# Create the df for the points and bars in plot B) (df_points)
-df_guichB2 <- df_guichB1 %>%
-  group_by(Treatment) %>%
-  summarize(
-    Mean = mean(Value),
-    SE = (sd(Value)/sqrt(length(Value))),
-    SD = sd(Value)
-  ) %>%
-  ungroup() %>%
-  mutate(
-    Treatment = factor(Treatment,
-                        levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot"))
-  ) %>%
-  data.frame()
-# Make plot
-fig_guich <- plotting(df_prob = df_guichA, df_violin = df_guichB1, df_points = df_guichB2)
-ggsave("./output/figures/fig_guich.png", plot=fig_guich, width = 20, height = 10, units = "cm", dpi = 3000)
-knitr::include_graphics("./output/figures/fig_guich.png")
 ```
 
 Finally, when all individuals from all the treatments were pooled together and species were compared, there were not significant differences in the estimated slopes (Mean learning slope _L. delicata_ = `r format_dec(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 3)`, 95% CI = [`r format_dec(quantile(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 0.025), 3)`, `r format_dec(quantile(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 0.975), 3)`]; Mean learning slope _L. guichenoti_ = `r format_dec(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 3)`, 95% CI = [`r format_dec(quantile(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 0.025), 3)`, `r format_dec(quantile(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 0.975), 3)`]; _L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`).  
@@ -379,7 +217,96 @@ plot(mod_guich)
 cat("\\newpage")
 ```
 
-#### Results employing only those individuals that passed a learning criterion of 80% correct choices in the last 10 trials of the associative task  
+#### Slopes estimates per treatment and species for the original database
+```{r, tbl-data, results='asis'}
+#| label: tbl-data
+#| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05)"
+source(here("R", "func.R"))
+#
+############################## CREATING BIG DF FOR TABLE ##############################
+# Building the vectors for titles of rows and columns
+specie <- c("L. delicata", "L. guichenoti")
+treatments <- c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")
+values <- c("Mean", "95% CI", "pmcmc")
+# Building the vectors for estimated means, co.intervals(95%), and pmcmc for the slopes obtained from posteriors, assuming a two-tailed test that testes the hypothesis that the value (slopes in this case) is 0.
+#First get estimates for both tasks
+estimates <- list(
+  deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot, 
+  guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot
+)
+#
+# Then get the mean, co.intervals(95%), and pmcmc
+mean <- format_dec(sapply(estimates, mean), 3)
+interval_025 <- format_dec(sapply(estimates, function(x) quantile(x,0.025)), 3)
+interval_975 <- format_dec(sapply(estimates, function(x) quantile(x,0.975)), 3)
+intervals <- paste(interval_025, interval_975, sep = " , ")
+Pmcmc <- format_p(sapply(estimates, pmcmc), 4)
+#
+# Building the df
+table_df <- data.frame(
+  Specie = rep(specie, each = length(treatments)),
+  Treatment = rep(rep(treatments, each = 1), times = length(specie)),
+  Mean = rep(mean, each = 1),
+  CI = rep(intervals, each = 1),
+  Pmcmc = rep(Pmcmc, each = 1)
+)
+#
+write.csv(table_df, file= "./output/Checking/df.csv")
+#
+############################## ADDING SAMPLE SIZE TO DF FOR TABLE ##############################
+# Make n_list into a df
+n_df <- as.data.frame(do.call(rbind, n_list)) %>%
+  rename("n" = V1) %>%
+  rownames_to_column("model") %>%
+  separate(model, into = c("Specie", "cort", "temp"), sep = "_") %>%
+  unite("Treatment", c("cort", "temp"), sep = "-") %>%
+  mutate(Specie = factor(Specie,
+                  labels = c(delicata = "L. delicata", guichenoti = "L. guichenoti")),
+        Treatment = factor(Treatment,
+                   levels = c("CORT-Cold", "Control-Cold", "CORT-Hot","Control-Hot")))
+# Estimate total sample size per species and number of observations (this will allow to include this data in the first column of the table)
+n_deli <- n_list$delicata_CORT_Cold+n_list$delicata_Control_Cold+n_list$delicata_CORT_Hot+n_list$delicata_Control_Hot
+ob_deli <- sum(clean_df$species == "delicata", na.rm = TRUE)
+n_guich <- n_list$guichenoti_CORT_Cold+n_list$guichenoti_Control_Cold+n_list$guichenoti_CORT_Hot+n_list$guichenoti_Control_Hot
+ob_guich <- sum(clean_df$species == "guichenoti", na.rm = TRUE)
+# Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
+new_table_df <- merge(table_df, n_df) %>%
+  rename('pmcmc' = 'Pmcmc', '95% CI' = 'CI') %>% #Change the names of the columns for the table
+  select(Specie, Treatment, Mean, `95% CI`, `pmcmc`, n) %>% #To order the columns in the way I want for the table
+  mutate(Specie = factor(Specie,
+                  levels = c("L. delicata", "L. guichenoti")),
+        Treatment = factor(Treatment, 
+                  levels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")))%>%
+  arrange(Specie, Treatment) %>% # To arrange the rows the way I want
+  unite("Treatment", c("Treatment", "n"), sep = " (n = ") %>%
+  mutate(Treatment = paste0(Treatment, ")"))
+write.csv(new_table_df, file= "./output/Checking/new_table_data.csv")
+#
+############################## MAKING THE TABLE ##############################
+## Table format
+set_flextable_defaults(
+ font.family = "Times New Roman",
+ fint.size = 10)
+# Split the table_data df by task
+real_table <- flextable(new_table_df) %>%
+    bold(~ `pmcmc` < 0.05, ~ `pmcmc` + Mean + `95% CI`) %>%
+    set_table_properties(width = 1) %>%
+    align(align="center", part="all") %>% 
+    set_header_labels(Mean = "Mean",
+                      `95% CI` = "95% CI",
+                      `pmcmc` = "pmcmc") %>%
+    italic(i= c(1, 5), j = 1, italic = TRUE, part = "body") %>% # To have names of species in italics
+    flextable::compose(i = c(2:4,6:8), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
+    flextable::compose(i = 2, j = 1, value = as_paragraph(sprintf("N = %d", n_deli)), part = "body") %>% # To write the delicata sample size
+    flextable::compose(i = 6, j = 1, value = as_paragraph(sprintf("N = %d", n_guich)), part = "body") %>% # To write the guichenoti sample size
+    flextable::compose(i = 3, j = 1, value = as_paragraph(sprintf("Obs = %d", ob_deli)), part = "body") %>% # To write the delicata total observations
+    flextable::compose(i = 7, j = 1, value = as_paragraph(sprintf("Obs = %d", ob_guich)), part = "body") %>% # To write the guichenoti total observations
+    hline(i = 4, j = c(1:5), part = "body") %>% # To make some horizontal lines
+    autofit() 
+real_table
+```
+
+#### Slopes estimates per treatment and species employing only those individuals that passed a learning criterion of 80% correct choices in the last 10 trials of the associative task  
 
 ```{r, cleandata2}
 #| label: cleandata2
@@ -476,7 +403,7 @@ mean_2 <- format_dec(sapply(estimates_2, mean), 3)
 interval_025_2 <- format_dec(sapply(estimates_2, function(x) quantile(x,0.025)), 3)
 interval_975_2 <- format_dec(sapply(estimates_2, function(x) quantile(x,0.975)), 3)
 intervals_2 <- paste(interval_025_2, interval_975_2, sep = " , ")
-pmcmc_2 <- format_p(sapply(estimates_2, pmcmc), 4)
+Pmcmc_2 <- format_p(sapply(estimates_2, pmcmc), 4)
 #
 # Building the df
 table_df_2 <- data.frame(
@@ -484,7 +411,7 @@ table_df_2 <- data.frame(
   Treatment = rep(rep(treatments, each = 1), times = length(specie)),
   Mean = rep(mean_2, each = 1),
   CI = rep(intervals_2, each = 1),
-  pmcmc = rep(pmcmc_2, each = 1)
+  Pmcmc = rep(Pmcmc_2, each = 1)
 )
 #
 write.csv(table_df, file= "./output/Checking/df.csv")
@@ -507,7 +434,7 @@ n_guich_2 <- n_list_2$guichenoti_CORT_Cold+n_list_2$guichenoti_Control_Cold+n_li
 ob_guich_2 <- sum(clean_df_2$species == "guichenoti", na.rm = TRUE)
 # Merge both dfs, put sample size together with the treatment, and organize the new df to make it look like the table
 new_table_df_2 <- merge(table_df_2, n_df_2) %>%
-  rename('pmcmc' = 'pmcmc', '95% CI' = 'CI') %>% #Change the names of the columns for the table
+  rename('pmcmc' = 'Pmcmc', '95% CI' = 'CI') %>% #Change the names of the columns for the table
   select(Specie, Treatment, Mean, `95% CI`, `pmcmc`, n) %>% #To order the columns in the way I want for the table
   mutate(Specie = factor(Specie,
                   levels = c("L. delicata", "L. guichenoti")),
