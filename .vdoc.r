@@ -109,7 +109,6 @@ guich_ControlHot <- (guich$'b_trial_reversal:cortControl:tempHot' + guich$b_tria
 #
 #
 #
-#
 #| label: coeficients
 # Getting the Cohen's d coeficients of the (below) between treatments and species comparisons using the formula: 
 # d =(mean1 - mean2) / sqrt((sd1^2 + sd2^2)/2)
@@ -125,14 +124,11 @@ sd_deliCORT <- sd(c(deli_CORTCold, deli_CORTHot))
 #
 deli_CORTd <- format_dec((mean_deliControl - mean_deliCORT) / sqrt((sd_deliControl^2 + sd_deliCORT^2)/2), 3)
 #
-standard_error <- 1 / sqrt((n_list$delicata_Control_Cold + n_list$delicata_Control_Hot)- 3 + (n_list$delicata_CORT_Cold + n_list$delicata_CORT_Hot) - 3)
-
-#
 #### A.2.- Temperature
 mean_deliCold <- mean(c(deli_ControlCold, deli_CORTCold))
 sd_deliCold <- sd(c(deli_ControlCold, deli_CORTCold))
-mean_deliHot <- mean(c(deli_CORTHot, deli_ControlHot))
-sd_deliHot <- sd(c(deli_CORTHot, deli_ControlHot))
+mean_deliHot <- mean(c(deli_ControlHot, deli_CORTHot))
+sd_deliHot <- sd(c(deli_ControlHot, deli_CORTHot))
 #
 deli_Tempd <- format_dec((mean_deliHot - mean_deliCold) / sqrt((sd_deliHot^2 + sd_deliCold^2)/2), 3)
 #
@@ -151,12 +147,17 @@ guich_CORTd <- format_dec((mean_guichControl - mean_guichCORT) / sqrt((sd_guichC
 #### B.2.- Temperature
 mean_guichCold <- mean(c(guich_ControlCold, guich_CORTCold))
 sd_guichCold <- sd(c(guich_ControlCold, guich_CORTCold))
-mean_guichHot <- mean(c(guich_CORTHot, guich_ControlHot))
-sd_guichHot <- sd(c(guich_CORTHot, guich_ControlHot))
+mean_guichHot <- mean(c(guich_ControlHot, guich_CORTHot))
+sd_guichHot <- sd(c(guich_ControlHot, guich_CORTHot))
 #
 guich_Tempd <- format_dec((mean_guichHot - mean_guichCold) / sqrt((sd_guichHot^2 + sd_guichCold^2)/2), 3)
 #
 #### B.3.- Interaction
+
+x <- (deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)
+minx <- quantile(x, 0.025)
+maxx <- quantile(x, 0.975)
+maxxB <- quantile(mean((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 0.975)
 
 #
 #
@@ -192,7 +193,7 @@ fig_guich <- plotting(sp = "guich", df_prob = df_guichprob, df_violin = df_guich
 # Combine plots of both species into the final figure
 fig_results <- plot_grid(fig_deli, fig_guich, ncol = 1)
 ggsave("./output/figures/fig_results.png", plot=fig_results, width = 25, height = 18, units = "cm", dpi = 600)
-knitr::include_graphics("./output/figures/fig_deli.png")
+knitr::include_graphics("./output/figures/fig_results.png")
 #
 #
 #
