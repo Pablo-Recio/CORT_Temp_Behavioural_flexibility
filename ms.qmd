@@ -108,7 +108,7 @@ guich_CORTHot <- (guich$'b_trial_reversal:tempHot' + guich$b_trial_reversal)
 guich_ControlHot <- (guich$'b_trial_reversal:cortControl:tempHot' + guich$b_trial_reversal + guich$'b_trial_reversal:cortControl' + guich$'b_trial_reversal:tempHot')
 ```
 
-```{r, coeficients}
+```{r, coefficients}
 #| label: coeficients
 # Getting the Cohen's d coeficients of the (below) between treatments and species comparisons using the formula: 
 # d =(mean1 - mean2) / sqrt((sd1^2 + sd2^2)/2)
