@@ -94,7 +94,8 @@ write.csv(guich, file= "./output/Checking/guich.csv")
 #
 #
 #
-# Rename some of the posteriors and make new estimates for the learning rate for the Reversal task doing the same thing we did in the chunk above.
+#| label: results
+# Rename some of the posteriors and make means and sd for the posteriors.
 ## 1) L. delicata
 deli_CORTCold <- deli$b_trial_reversal
 deli_ControlCold <- (deli$'b_trial_reversal:cortControl' + deli$b_trial_reversal)
@@ -105,6 +106,58 @@ guich_CORTCold <- guich$b_trial_reversal
 guich_ControlCold <- (guich$'b_trial_reversal:cortControl' + guich$b_trial_reversal)
 guich_CORTHot <- (guich$'b_trial_reversal:tempHot' + guich$b_trial_reversal)
 guich_ControlHot <- (guich$'b_trial_reversal:cortControl:tempHot' + guich$b_trial_reversal + guich$'b_trial_reversal:cortControl' + guich$'b_trial_reversal:tempHot')
+#
+#
+#
+#
+#| label: coeficients
+# Getting the Cohen's d coeficients of the (below) between treatments and species comparisons using the formula: 
+# d =(mean1 - mean2) / sqrt((sd1^2 + sd2^2)/2)
+# For the estimations of the confidence intervals we used Cohen's standard error based on the formula: se = 1 / sqrt(n1-3 + n2-3)
+# And critical value:
+critical_value <- qnorm((1 + 0.95) / 2)
+## A) L. delicata
+#### A.1.- CORT
+mean_deliControl <- mean(c(deli_ControlCold, deli_ControlHot))
+sd_deliControl <- sd(c(deli_ControlCold, deli_ControlHot))
+mean_deliCORT <- mean(c(deli_CORTCold, deli_CORTHot))
+sd_deliCORT <- sd(c(deli_CORTCold, deli_CORTHot))
+#
+deli_CORTd <- format_dec((mean_deliControl - mean_deliCORT) / sqrt((sd_deliControl^2 + sd_deliCORT^2)/2), 3)
+#
+standard_error <- 1 / sqrt((n_list$delicata_Control_Cold + n_list$delicata_Control_Hot)- 3 + (n_list$delicata_CORT_Cold + n_list$delicata_CORT_Hot) - 3)
+
+#
+#### A.2.- Temperature
+mean_deliCold <- mean(c(deli_ControlCold, deli_CORTCold))
+sd_deliCold <- sd(c(deli_ControlCold, deli_CORTCold))
+mean_deliHot <- mean(c(deli_CORTHot, deli_ControlHot))
+sd_deliHot <- sd(c(deli_CORTHot, deli_ControlHot))
+#
+deli_Tempd <- format_dec((mean_deliHot - mean_deliCold) / sqrt((sd_deliHot^2 + sd_deliCold^2)/2), 3)
+#
+#### A.3.- Interaction
+
+#
+## B) L. guichenoti
+#### B.1.- CORT
+mean_guichControl <- mean(c(guich_ControlCold, guich_ControlHot))
+sd_guichControl <- sd(c(guich_ControlCold, guich_ControlHot))
+mean_guichCORT <- mean(c(guich_CORTCold, guich_CORTHot))
+sd_guichCORT <- sd(c(guich_CORTCold, guich_CORTHot))
+#
+guich_CORTd <- format_dec((mean_guichControl - mean_guichCORT) / sqrt((sd_guichControl^2 + sd_guichCORT^2)/2), 3)
+#
+#### B.2.- Temperature
+mean_guichCold <- mean(c(guich_ControlCold, guich_CORTCold))
+sd_guichCold <- sd(c(guich_ControlCold, guich_CORTCold))
+mean_guichHot <- mean(c(guich_CORTHot, guich_ControlHot))
+sd_guichHot <- sd(c(guich_CORTHot, guich_ControlHot))
+#
+guich_Tempd <- format_dec((mean_guichHot - mean_guichCold) / sqrt((sd_guichHot^2 + sd_guichCold^2)/2), 3)
+#
+#### B.3.- Interaction
+
 #
 #
 #

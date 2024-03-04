@@ -301,9 +301,9 @@ plotting <- function(sp, df_prob, df_violin, df_points){
   # First part of the plot (A, C), the probabilities of choosing right over trial
   plot1 <- ggplot(df_prob, aes(x = Trial, y = Mean_Predicted_prob, color = Treatment)) +
   geom_line(linewidth = 1) +
-  scale_color_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="#68bde1", "CORT-Hot"="#b52201", "Control-Hot"="#f38778")) +
+  scale_color_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="#68bde1", "CORT-Hot"="#b50101", "Control-Hot"="#fa927d")) +
   geom_ribbon(aes(ymin = Mean_Predicted_prob - SE_Predicted_prob, ymax = Mean_Predicted_prob + SE_Predicted_prob, fill = Treatment), color = NA, alpha = 0.075) + 
-  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="#68bde1", "CORT-Hot"="#b52201", "Control-Hot"="#f38778")) +
+  scale_fill_manual(values = c("CORT-Cold"="darkblue", "Control-Cold"="#68bde1", "CORT-Hot"="#b50101", "Control-Hot"="#fa927d")) +
   theme_classic() +
   labs(y = "Predicted probability of correct choice", x = "Trial") +
   theme(plot.margin = margin(5.5, 5.5, 5.5, 5.5, "mm")) +
@@ -316,7 +316,7 @@ plotting <- function(sp, df_prob, df_violin, df_points){
   # Second part of the plot (B, D), the slope estimates of each treatment
   plot2 <- ggplot(df_violin, aes(x = Treatment, y = Value, fill = Treatment)) +
   geom_flat_violin(alpha = 0.5) +
-  scale_fill_manual(values = c("#f38778", "#b52201", "#68bde1", "darkblue")) +
+  scale_fill_manual(values = c("#fa927d", "#b50101", "#68bde1", "darkblue")) +
   geom_point(data = df_points, aes(y = Mean, x = Treatment), position = position_dodge(width = 0.75), color = "black", fill = "black", size = 3) +
   geom_segment(data = df_points, aes(y = Mean - SD, yend = Mean + SD, x = Treatment, xend = Treatment), size = 1.5, color = "black") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
