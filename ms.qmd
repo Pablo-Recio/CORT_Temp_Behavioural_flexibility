@@ -108,55 +108,7 @@ guich_CORTHot <- (guich$'b_trial_reversal:tempHot' + guich$b_trial_reversal)
 guich_ControlHot <- (guich$'b_trial_reversal:cortControl:tempHot' + guich$b_trial_reversal + guich$'b_trial_reversal:cortControl' + guich$'b_trial_reversal:tempHot')
 ```
 
-```{r, coefficients}
-#| label: coeficients
-# Getting the Cohen's d coeficients of the (below) between treatments and species comparisons using the formula: 
-# d =(mean1 - mean2) / sqrt((sd1^2 + sd2^2)/2)
-# For the estimations of the confidence intervals we used Cohen's standard error based on the formula: se = 1 / sqrt(n1-3 + n2-3)
-# And critical value:
-critical_value <- qnorm((1 + 0.95) / 2)
-## A) L. delicata
-#### A.1.- CORT
-mean_deliControl <- mean(c(deli_ControlCold, deli_ControlHot))
-sd_deliControl <- sd(c(deli_ControlCold, deli_ControlHot))
-mean_deliCORT <- mean(c(deli_CORTCold, deli_CORTHot))
-sd_deliCORT <- sd(c(deli_CORTCold, deli_CORTHot))
-#
-deli_CORTd <- format_dec((mean_deliControl - mean_deliCORT) / sqrt((sd_deliControl^2 + sd_deliCORT^2)/2), 3)
-#
-#### A.2.- Temperature
-mean_deliCold <- mean(c(deli_ControlCold, deli_CORTCold))
-sd_deliCold <- sd(c(deli_ControlCold, deli_CORTCold))
-mean_deliHot <- mean(c(deli_ControlHot, deli_CORTHot))
-sd_deliHot <- sd(c(deli_ControlHot, deli_CORTHot))
-#
-deli_Tempd <- format_dec((mean_deliHot - mean_deliCold) / sqrt((sd_deliHot^2 + sd_deliCold^2)/2), 3)
-#
-#### A.3.- Interaction
-
-#
-## B) L. guichenoti
-#### B.1.- CORT
-mean_guichControl <- mean(c(guich_ControlCold, guich_ControlHot))
-sd_guichControl <- sd(c(guich_ControlCold, guich_ControlHot))
-mean_guichCORT <- mean(c(guich_CORTCold, guich_CORTHot))
-sd_guichCORT <- sd(c(guich_CORTCold, guich_CORTHot))
-#
-guich_CORTd <- format_dec((mean_guichControl - mean_guichCORT) / sqrt((sd_guichControl^2 + sd_guichCORT^2)/2), 3)
-#
-#### B.2.- Temperature
-mean_guichCold <- mean(c(guich_ControlCold, guich_CORTCold))
-sd_guichCold <- sd(c(guich_ControlCold, guich_CORTCold))
-mean_guichHot <- mean(c(guich_ControlHot, guich_CORTHot))
-sd_guichHot <- sd(c(guich_ControlHot, guich_CORTHot))
-#
-guich_Tempd <- format_dec((mean_guichHot - mean_guichCold) / sqrt((sd_guichHot^2 + sd_guichCold^2)/2), 3)
-#
-#### B.3.- Interaction
-
-```
-
-Both species learnt across all treatments (@fig-results B, D), but we did not find any difference between treatments or species in the rate of learning. For _L. delicata_, hormone treatment (Control - CORT = `r format_dec(mean(deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_ControlCold + deli_ControlHot) - (deli_CORTCold + deli_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc((deli_CORTHot + deli_ControlHot) - (deli_CORTCold + deli_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_ControlHot - deli_CORTHot)-(deli_ControlCold - deli_CORTCold)), 3)`) did not affect learning (see @fig-results A, B). We similarly found no significant effects of  hormone (Control - CORT = `r format_dec(mean((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((guich_ControlCold + guich_ControlHot) - (guich_CORTCold + guich_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc((guich_CORTHot + guich_ControlHot) - (guich_CORTCold + guich_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`, p~mcmc~ = `r format_p(pmcmc((guich_ControlHot - guich_CORTHot) - (guich_ControlCold - guich_CORTCold)), 3)`) on learning in _L. guichenoti_ (see @fig-results C, D).  
+Both species learnt across all treatments (@fig-results B, D), but we did not find any difference between treatments or species in the rate of learning. For _L. delicata_, hormone treatment (Control - CORT = `r format_dec(mean(c(deli_ControlCold, deli_ControlHot)) - mean(c(deli_CORTCold + deli_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc(c(deli_ControlCold, deli_ControlHot) - c(deli_CORTCold, deli_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean(c(deli_CORTHot, deli_ControlHot)) - mean(c(deli_CORTCold, deli_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc(c(deli_CORTHot, deli_ControlHot) - c(deli_CORTCold, deli_ControlCold)),3)`), or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean(deli_ControlHot - deli_CORTHot) - mean(deli_ControlCold - deli_CORTCold), 3)`, p~mcmc~ = `r format_p(pmcmc(c(deli_ControlHot, deli_CORTHot) - c(deli_ControlCold, deli_CORTCold)), 3)`) did not affect learning (see @fig-results A, B). We similarly found no significant effects of  hormone (Control - CORT = `r format_dec(mean(c(guich_ControlCold, guich_ControlHot)) - mean(c(guich_CORTCold, guich_CORTHot)), 3)`, p~mcmc~ = `r format_p(pmcmc(c(guich_ControlCold, guich_ControlHot) - c(guich_CORTCold, guich_CORTHot)), 3)`), incubation temperature (Hot - Cold = `r format_dec(mean(c(guich_CORTHot, guich_ControlHot)) - mean(c(guich_CORTCold, guich_ControlCold)),3)`, p~mcmc~ = `r format_p(pmcmc(c(guich_CORTHot, guich_ControlHot) - c(guich_CORTCold, guich_ControlCold)),3)`), **or the interaction ([(Control-Hot - CORT-Hot) - (Control-Cold - CORT-Cold)] = `r format_dec(mean(guich_ControlHot - guich_CORTHot) - mean(guich_ControlCold - guich_CORTCold), 3)`, p~mcmc~ = `r format_p(pmcmc(mean(guich_ControlHot - guich_CORTHot) - mean(guich_ControlCold - guich_CORTCold)), 3)`) on learning in _L. guichenoti_ (see @fig-results C, D).**  
 
 ```{r, fig-results}
 #| label: fig-results
@@ -191,7 +143,7 @@ ggsave("./output/figures/fig_results.png", plot=fig_results, width = 25, height 
 knitr::include_graphics("./output/figures/fig_results.png")
 ```
 
-Finally, when all individuals from all the treatments were pooled together and species were compared, there were not significant differences in the estimated slopes (Mean learning slope _L. delicata_ = `r format_dec(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 3)`, 95% CI = [`r format_dec(quantile(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 0.025), 3)`, `r format_dec(quantile(mean(deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot), 0.975), 3)`]; Mean learning slope _L. guichenoti_ = `r format_dec(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 3)`, 95% CI = [`r format_dec(quantile(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 0.025), 3)`, `r format_dec(quantile(mean(guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot), 0.975), 3)`]; _L. delicata_ - _L. guichenoti_ = `r format_dec(mean((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`, p~mcmc~ = `r format_p(pmcmc((deli_CORTCold + deli_ControlCold + deli_CORTHot + deli_ControlHot) - (guich_CORTCold + guich_ControlCold + guich_CORTHot + guich_ControlHot)), 3)`).  
+Finally, when all individuals from all the treatments were pooled together and species were compared, there were not significant differences in the estimated slopes (Mean learning slope _L. delicata_ = `r format_dec(mean(c(deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot)), 3)`, 95% CI = [`r format_dec(quantile(c(deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot), 0.025), 3)`, `r format_dec(quantile(c(deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot), 0.975), 3)`]; Mean learning slope _L. guichenoti_ = `r format_dec(mean(c(guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot)), 3)`, 95% CI = [`r format_dec(quantile(c(guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot), 0.025), 3)`, `r format_dec(quantile(c(guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot), 0.975), 3)`]; _L. delicata_ - _L. guichenoti_ = `r format_dec(mean(c(deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot)) - mean(c(guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot)), 3)`, p~mcmc~ = `r format_p(pmcmc(c(deli_CORTCold, deli_ControlCold, deli_CORTHot, deli_ControlHot) - c(guich_CORTCold, guich_ControlCold, guich_CORTHot, guich_ControlHot)), 3)`).  
 
 
 ## Discussion
