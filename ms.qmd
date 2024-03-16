@@ -194,7 +194,7 @@ We declare we have no competing interests.
 This work was supported by a National Australian University fellowship (P.R.), the Australian Research Council (grant no. DP210101152) to D.N., and the ACT Herpetological Association grant to P.R.
 
 ## Acknowledgements
-and two anonymous reviewers for their valuable feedback on the manuscript.
+We thank the help and assistance of our lab technicians Benjamin Durant and Michelle Stephens for taking care of the lizards. We are also grateful to ACTHA for the grant for the 3D printed feeders, and we also thank ANU MakerSpace, where we design and built the prototypes of the 3D printed feeders. Finally, we wish to acknowledge the anonymous reviewers for their valuable feedback on the manuscript.  
 
 ## References
 <div id="refs"></div>
