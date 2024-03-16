@@ -61,7 +61,7 @@ We recorded whether the animal chose the correct ramp first or not. We considere
 #| label: fig-Methods
 #| fig.cap: "Experimental design of early environment manipulation and learning tasks. On top, the early environment manipulation for both species. Center, the habituation phase with the respective three different stages. On the bottom, the associative and reversal tasks; white lids show the ramps where the food reward was not accessible."
 
-knitr::include_graphics("./Others/BEHFLEX_FIG_1")
+knitr::include_graphics("./Others/BEHFLEX_FIG_1.png")
 
 ```
 
@@ -267,8 +267,6 @@ plot(mod_guich)
 cat("\\newpage")
 ```
 
-#### Slopes estimates per treatment and species for the original database
-
 ```{r, tbl-data, results='asis'}
 #| label: tbl-data
 #| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05)"
@@ -357,8 +355,9 @@ real_table <- flextable(new_table_df) %>%
 real_table
 ```
 
-#### Slopes estimates per treatment and species employing only those individuals that passed a learning criterion of 80% correct choices in the last 10 trials of the associative task  
-
+```{r, results='asis', echo=FALSE}
+cat("\\newpage")
+```
 
 ```{r, cleandata2}
 #| label: cleandata2
