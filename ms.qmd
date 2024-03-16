@@ -25,14 +25,18 @@ editor_options:
 pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4, zoo, lmerTest, broom, tidybayes, ggh4x, PupillometryR, cowplot, png, grid)
 ```
 
-Pablo Recio-Santiago^1^,$\ddagger$ , Dalton L. Leibold^1^, Ondi Crino ^1,2^, Kris Wild^1,3^, Daniel W.A. Noble^1^
+Pablo Recio-Santiago^1^,$\ddagger$ , Dalton C. Leibold^1^, Ondi Crino ^1,2^, Kris Wild^1,3^, Chris Friesen^4^, Basile Mauclaire^1,5^, Amelia Peardon ^1^, Daniel W.A. Noble^1^
 
-^1^ Division of Ecology and Evolution, Research School of Biology, The Australian National University, Canberra, ACT 2601, Australia &NewLine;
-^2^ Flinder's University, Adelaide, SA 5001, Australia &NewLine;
-^3^ Melbourne University, Melbourne, VIC 3000, Australia &NewLine;
-$\ddagger$ Corresponding author: pablo.reciosantiago@anu.edu.au &NewLine;
+^1^ Division of Ecology and Evolution, Research School of Biology, The Australian National University, Canberra, ACT 2601, Australia  
+^2^ Flinder's University, Adelaide, SA 5001, Australia  
+^3^ Melbourne University, Melbourne, VIC 3000, Australia  
+^4^ University of Wollongong, Wollongong, NSW 2500, Australia  
+^5^ Université de Lille, Lille 59000, France  
+$\ddagger$ Corresponding author: pablo.reciosantiago@anu.edu.au  
 
 ## Abstract
+Behavioural flexibility is crucial for species adapting to new environments, specially during invasion events. However, the early environment experienced can profoundly impact animals' ability to behave flexibly. Aspects like parents' transmitted hormones or temperature are predicted to interact to shape behavioural flexibility. But, given the advantages associated to behaving flexibly during the invasion process, behavioural flexibility in invasive species is expected to be less susceptible to the impacts of early environment. Here, we investigated the interactive effects of prenatal corticosterone (CORT) and temperature on behavioural flexibility in two lizard species, _Lampropholis delicata_ and _L. guichenoti_, with distinct invasion success. We manipulated prenatal CORT levels and incubation temperature in a 2x2 factorial design, and then assessed behavioural flexibility through a reversal learning task. Contrary to our expectations, we found no significant differences in the reversal learning rate between treatments or species. Our results suggest that prenatal temperature and CORT may not influence reversal learning in these species and that other factors in _L. delicata_ biology may be more influential in invasion success than behavioural flexibility alone.  
+
 
 ## Introduction
 Behavioural flexibility describes the ability of individuals to adjust behaviour adaptively in response to internal or external changes in the environment [@brown2010behavioral]. It comprises a suite of behaviours, including problem-solving and innovation [@brown2010behavioral], that are predicted to be crucial for invasion success [@wright2010behavioral; @chapple2012can; @szabo2020can]. Species with greater behavioural flexibility are expected to be more likely to survive and establish in new habitats because behaving flexibly enhances their capacity to exploit new resources and face new challenges [@wright2010behavioral; @chapple2012can; @szabo2020can]. For instance, in closely related bird species successful invaders show a higher frequency of foraging innovations [@sol2000behavioural]. According to the 'adaptive flexibility hypothesis', behavioural flexibility is most relevant during introduction, establishment, and the spread of an invasive population [@wright2010behavioral; @chapple2012can; @szabo2020can]. In mammals, birds, reptiles and amphibians, relative brain size has been shown to be a good predictor of behavioural flexibility and invasive success [@sol2000behavioural; @sol2002behavioural; @sol2008brain; @amiel_smart_2011]. However, the brain is also sensitive to environmental changes during the early stages of development [@zhu_prenatal_2004] creating uncertainty about how environmental insults faced by early invaders might impact behavioural flexibility and thus the probability of invasion success. 
@@ -57,7 +61,7 @@ We recorded whether the animal chose the correct ramp first or not. We considere
 #| label: fig-Methods
 #| fig.cap: "Experimental design of early environment manipulation and learning tasks. On top, the early environment manipulation for both species. Center, the habituation phase with the respective three different stages. On the bottom, the associative and reversal tasks; white lids show the ramps where the food reward was not accessible."
 
-knitr::include_graphics("./Others/BEHFLEX_FIG_1.svg")
+knitr::include_graphics("./Others/BEHFLEX_FIG_1")
 
 ```
 
@@ -170,6 +174,27 @@ Our early environment manipulation did not affect the lizards' performance in th
 
 In conclusion, our results indicate that lizards performed the reversal learning task, a measure of behavioural flexibility, at similar rates, with no discernible differences between treatments or species. These findings contrast our initial predictions and suggest that other aspects of _L. delicata_ biology may be more influential for their success as invaders than behavioural flexibility alone. The present study also indicates that prenatal CORT and temperature do not affect learning abilities in these species. Nevertheless, it remains possible that the effects of the early environment are task-dependent, and future studies should explore performance across different cognitive tasks and the effects of both treatments on brain function.  
 
+## Ethics  
+Experiments complied with Australian law and were approved by the Australian National University Animal Experimentation Ethics Committee (A2022_33).  
+
+## Data accessibility  
+All data, data description, and R code are availabe in public repository https://github.com/Pablo-Recio/CORT_Temp_Behavioural_flexibility  
+
+## Declaration of AI use
+We declare Chat GPT was used for questions related to coding and data analyses. All other parts of the manuscript were written by the authors and those parts were AI was used were checked and modified accordingly by the authors.
+
+## Authors' contributions
+P.R.: conceptualization, methodology, data collection, data curation, formal analysis, writing—original draft, writing—review and editing; D.C.L.: data collection, writing—review and editing; O.C.: conceptualization, methodology, writing—review and editing; K.W.: conceptualization, writing—review and editing; C.F.: conceptualization, methodology, writing—review and editing; B.M: data collection, writing—review and editing; A.P.: data collection, writing—review and editing; D.N.: conceptualization, methodology, funding acquisition, project administration, resources, supervision, writing—review and editing.  
+All authors gave final approval for publication and agreed to be held accountable for the work performed therein.  
+
+## Conflict of interest declaration  
+We declare we have no competing interests.  
+
+## Funding
+This work was supported by a National Australian University fellowship (P.R.), the Australian Research Council (grant no. DP210101152) to D.N., and the ACT Herpetological Association grant to P.R.
+
+## Acknowledgements
+and two anonymous reviewers for their valuable feedback on the manuscript.
 
 ## References
 <div id="refs"></div>
