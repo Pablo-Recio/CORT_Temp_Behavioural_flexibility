@@ -525,8 +525,53 @@ real_table_2
 cat("\\newpage")
 ```
 
-In the figure, the distribution of age per treatment and species:
+Checking the effect of age on the learning rate in the associative task.
 
+Model formula: 
+Choice ~ age.start + trial_associative*cort*temp + (1 + trial_associative|lizard_id)
+
+```{r, modelsage}
+#| label: modelsage
+# Fitting the models for L. delicata and L. guichenoti including age as a covariate
+#
+refit2 = TRUE
+formula <- FC_reversal ~ age.start + trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)
+species <- c("delicata", "guichenoti")
+#
+models <- list() # Create an empty list to store the models
+for(s in species){
+  # Subset the data for the species
+  data_species <- clean_df %>%
+    filter(species == s)
+  # Define model file name
+  model_file <- paste0("output/models/model_age_", s, ".rds")
+# Fit the model only if it has not been fit yet (if refit2 = TRUE)
+  if(refit2){
+    # Fit the model
+    model <- brm(formula,
+                data = data_species,
+                family = bernoulli(link = "logit"),
+                chains = 4, cores = 4, iter = 3000, warmup = 1000, control = list(adapt_delta = 0.99))
+    # Write the model to a file
+    saveRDS(model, file = model_file)
+  } else {
+      # Read the model from a file
+      model <- readRDS(file = model_file)
+  }
+  # Save the model to the list
+  models[[s]] <- model
+}
+model_age_deli <- models[["delicata"]]
+model_age_guich <- models[["guichenoti"]]
+```
+
+Results for L_delicata:
+` r summary(model_age_deli)`
+
+Results for L_guichenoti:
+` r summary(model_age_guich)`
+
+In the figure, the distribution of age per treatment and species:
 ```{r, age} 
 #| label: age
 # Plotting the distribution of the age of the lizards by treatment and species
