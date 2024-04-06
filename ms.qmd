@@ -171,7 +171,7 @@ This study aimed to determine the interactive effects of prenatal temperature an
 
 Previous studies have shown that _L. delicata_ more readily explores novel environments than _L. guichenoti_, which can be advantageous during colonisation [@chapple_know_2011]. However, Bezzina _et al._ [@bezzina2014does] found no differences in learning between the two skinks in an associative learning task. Our results align with the latter study and suggest that behavioural flexibility does not differ between these species. In addition, we did not find any effect of the treatments on either species. Both results contrast our original predictions and may indicate that other aspects of their biology are more relevant for _L. delicata_'s success as invaders than behavioural flexibility. For instance, the mentioned differences in exploratory behaviour can be the key factor explaining why _L. delicata_ and not _L. guichenoti_ is better at colonising new areas, since exploring more can also enhance the ability to effectively locate novel resources in _L. delicata_ [@chapple_know_2011].  
 
-Our early environment manipulation did not affect the lizards' performance in the task. We predicted that prenatal CORT treatment would decrease reversal learning abilities and that high temperatures would minimise these effects. However, our results show no significant differences between treatments in both species. In contrast to previous studies that show high GCs levels impaired performance in different types of learning tests [@lemaire_prenatal_2000; @zhu_prenatal_2004;  @farrell_developmental_2016], we did not find any effect of CORT on the speed at which lizards learn. Our results are, however, consistent with other experiments where GCs did not impact learning abilities [@szuran_water_1994; @bebus_associative_2016]. In some systems, exposure to CORT during development has hormetic effects on learning and neural structures [@du_dynamic_2009; @mcewen_brain_2012]. For example, in Sprague–Dawley rats, exposure to high doses of CORT, but not low doses, reduced density of immature neurons and cell proliferation and in the dentate gyrus [@DOSEneurobrummelte2010chronic]. The CORT treatment employed here is known to impact other aspects such as growth or mortality in these species (unpublished data), but the effect of the same dose can differ between tissues (@lemaire_prenatal_2000). More striking is the absence of an effect of incubation temperature since most of the studies in reptiles reported better performance when incubated at higher temperatures in different associative learning and motor tasks [@amiel_hotter_2012; @amiel_egg_2014; @clark_colour_2014]. Furthermore, those studies that reported cold-incubated lizards learn faster [@dayananda_incubation_2017; @abayarathna_effects_2020] used incubation temperatures far beyond the natural range in their hot treatments. We know that our prenatal treatments affect other traits in both species of lizards used in this experiment (unpublished data). However, it is possible that the treatments affected tissues differently. An alternative hypothesis is that the effects of the prenatal treatments are age-dependent [see @frisone2002social]. Here, the lizards' age at the beginning of the experiment ranged from 41 to 148 days old in _L. delicata_ and 48 to 132 in _L. guichenoti_, and when this variable was included in the models, we did no find any significant effect of age (see Supplementary material). However, the treatments may have consequences at earlier or later stages of life that are not being captured in our experiment. Conversely, the effects of the early environment may likely vary depending on the cognitive task, as evidenced by studies showing variations in the impact of prenatal GCs and temperature on different brain regions [@coomber_independent_1997; @sakata_neural_2000; @lemaire_prenatal_2000]. In addition, prenatal GCs can have programmatic effects on HPA axis sensitivity [@crino_corticosterone_2014], potentially impacting the lizards' sensitivity to stressors. This altered stress response may influence learning dynamics through hormetic effects of CORT [@du_dynamic_2009], particularly in stressful contexts; although such effects were not likely observable in our experimental design. These hypotheses are not mutually exclusive and could be tested in future experiments using multiple doses of prenatal CORT treatment, assessing learning using multiple cognitive tasks and at different ages, testing the effect of stress during the learning process, and measuring the neurophysiological effects on different brain nuclei.  
+Our early environment manipulation did not affect the lizards' performance in the task. We predicted that prenatal CORT treatment would decrease reversal learning abilities and that high temperatures would minimise these effects. However, our results show no significant differences between treatments in both species. In contrast to previous studies that show high GCs levels impaired performance in different types of learning tests [@lemaire_prenatal_2000; @zhu_prenatal_2004;  @farrell_developmental_2016], we did not find any effect of CORT on the speed at which lizards learn. Our results are, however, consistent with other experiments where GCs did not impact learning abilities [@szuran_water_1994; @bebus_associative_2016]. In some systems, exposure to CORT during development has hormetic effects on learning and neural structures [@du_dynamic_2009; @mcewen_brain_2012]. For example, in Sprague–Dawley rats, exposure to high doses of CORT, but not low doses, reduced density of immature neurons and cell proliferation and in the dentate gyrus [@DOSEneurobrummelte2010chronic]. The CORT treatment employed here is known to impact other aspects such as growth or mortality in these species (unpublished data), but the effect of the same dose can differ between tissues (@lemaire_prenatal_2000). More striking is the absence of an effect of incubation temperature since most of the studies in reptiles reported better performance when incubated at higher temperatures in different associative learning and motor tasks [@amiel_hotter_2012; @amiel_egg_2014; @clark_colour_2014]. Furthermore, those studies that reported cold-incubated lizards learn faster [@dayananda_incubation_2017; @abayarathna_effects_2020] used incubation temperatures far beyond the natural range in their hot treatments. We know that our prenatal treatments affect other traits in both species of lizards used in this experiment (unpublished data). However, it is possible that the treatments affected tissues differently. An alternative hypothesis is that the effects of the prenatal treatments are age-dependent [see @frisone2002social]. Here, the lizards' age at the beginning of the experiment ranged from 41 to 148 days old in _L. delicata_ and 48 to 132 in _L. guichenoti_, and when this variable was included in the models, we did no find any significant effect of age (see Supplementary material). However, the treatments may have consequences at earlier or later stages of life that are not being captured in our experiment. Conversely, the effects of the early environment may likely vary depending on the cognitive task, as evidenced by studies showing variations in the impact of prenatal GCs and temperature on different brain regions [@coomber_independent_1997; @sakata_neural_2000; @lemaire_prenatal_2000]. In addition, prenatal GCs can have programmatic effects on HPA axis sensitivity, potentially impacting the lizards' sensitivity to stressors [@crino_corticosterone_2014]. This altered stress response may influence learning dynamics through hormetic effects of CORT [@du_dynamic_2009], particularly in stressful contexts [@taborsky2021towards]; although such effects were not likely observable in our experimental design. These hypotheses are not mutually exclusive and could be tested in future experiments using multiple doses of prenatal CORT treatment, assessing learning using multiple cognitive tasks and at different ages, testing the effect of stress during the learning process, and measuring the neurophysiological effects on different brain nuclei.  
 
 In conclusion, our results indicate that lizards performed the reversal learning task, a measure of behavioural flexibility, at similar rates, with no discernible differences between treatments or species. These findings contrast our initial predictions and suggest that other aspects of _L. delicata_ biology may be more influential for their success as invaders than behavioural flexibility alone. The present study also indicates that prenatal CORT and temperature do not affect learning abilities in these species. Nevertheless, it remains possible that the effects of the early environment are task-dependent, and future studies should explore performance across different cognitive tasks and the effects of both treatments on brain function.  
 
@@ -435,7 +435,7 @@ guich_ControlHot_2 <- (guich_2$'b_trial_reversal:cortControl:tempHot' + guich_2$
 
 ```{r, tbl-data_2}
 #| label: tbl-data_2
-#| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05)"
+#| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Here we included only those individuals who made the right choice in 8 out of the last 10 trials in the previous associative task. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05)"
 source(here("R", "func.R"))
 #
 ############################## CREATING BIG DF FOR TABLE ##############################
@@ -566,15 +566,44 @@ model_age_guich <- models[["guichenoti"]]
 ```
 
 Results for _L. delicata_:
-```{r, tbl-agedeli, results='asis'}
+```{r, tbl-agedeli, results='asis', out.widht = "26cm"}
 #| label: tbl-agedeli
+#| tbl-cap: "Summary model_age_deli"
 deli_age_res <- summary(model_age_deli)
+# Extract fixed effects names and their corresponding estimates, CIs, etc.
+fixed_effects <- deli_age_res$fixed %>%
+  mutate_all(~ format_dec(., 2))
+Predictors <- rownames(fixed_effects)
+deli_age_tbl_df <- cbind(Predictors, fixed_effects)
+# Convert the fixed effects data frame to a flextable
+flextable(deli_age_tbl_df) %>%
+  set_table_properties(., width = 1) %>%
+  fontsize(size = 10, part = "all")
+```
 
-
+```{r, results='asis', echo=FALSE}
+cat("\\newpage")
 ```
 
 Results for _L. guichenoti_:
-` r summary(model_age_guich)`
+```{r, tbl-ageguich, results='asis'}
+#| label: tbl-ageguich
+#| tbl-cap: "Summary model_age_guich"
+guich_age_res <- summary(model_age_guich)
+# Extract fixed effects names and their corresponding estimates, CIs, etc.
+fixed_effects <- guich_age_res$fixed %>%
+  mutate_all(~ format_dec(., 2))
+Predictors <- rownames(fixed_effects)
+guich_age_tbl_df <- cbind(Predictors, fixed_effects)
+# Convert the fixed effects data frame to a flextable
+flextable(guich_age_tbl_df)%>%
+  set_table_properties(., width = 1) %>%
+  fontsize(size = 10, part = "all")
+```
+
+```{r, results='asis', echo=FALSE}
+cat("\\newpage")
+```
 
 ```{r, fig-age} 
 #| label: fig-age

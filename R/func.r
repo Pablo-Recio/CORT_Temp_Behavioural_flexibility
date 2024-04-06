@@ -114,7 +114,7 @@ pmcmc <- function(x, null = 0, twotail = TRUE, dir){
 }
 ####################
 ####################
-# Function to format numbers with 2 decimal places
+# Function to format numbers with n decimal places
 #' @title format_dec
 #' @param x The object
 #' @param n The number of decimals
@@ -124,8 +124,8 @@ format_dec <- function(x, n) {
 }
 ####################
 ####################
-# Function to format numbers with 2 decimal places
-#' @title format_dec
+# Function to format p_values with n decimal places
+#' @title format_p
 #' @param x The object
 #' @param n The number of decimals
 format_p <- function(x, n) {
