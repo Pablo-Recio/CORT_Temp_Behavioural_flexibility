@@ -534,6 +534,8 @@ Choice ~ age.start + trial_associative * cort * temp + (1 + trial_associative|li
 #| label: modelsage
 # Fitting the models for L. delicata and L. guichenoti including age as a covariate
 #
+data_age <- clean_df %>%
+  mutate(age.start = as.numeric(age.start)-mean(as.numeric(age.start)))
 refit2 = FALSE
 formula <- FC_reversal ~ age.start + trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)
 species <- c("delicata", "guichenoti")
@@ -541,7 +543,7 @@ species <- c("delicata", "guichenoti")
 models <- list() # Create an empty list to store the models
 for(s in species){
   # Subset the data for the species
-  data_species <- clean_df %>%
+  data_species <- data_age %>%
     filter(species == s)
   # Define model file name
   model_file <- paste0("output/models/model_age_", s, ".rds")
@@ -610,7 +612,7 @@ cat("\\newpage")
 #| fig.cap: "Distribution of the age of the lizards by treatment and species"
 # Plotting the distribution of the age of the lizards by treatment and species
 # Load the data
-data_age <- read.csv(here("data/Learning.csv"))
+data_age <- clean_df
 # Plot the distribution of the age of the lizards by treatment and species
 img_deli <- readPNG("./Others/Deli.png")
 plot_age_deli <- data_age %>%
