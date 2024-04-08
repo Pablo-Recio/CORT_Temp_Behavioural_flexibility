@@ -25,7 +25,7 @@ editor_options:
 pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4, zoo, lmerTest, broom, tidybayes, ggh4x, PupillometryR, cowplot, png, grid)
 ```
 
-Pablo Recio-Santiago^1^,$\ddagger$ , Dalton C. Leibold^1^, Ondi L. Crino ^1,2^, Kristoffer H. Wild^1,3^, Chris Friesen^4^, Basile Mauclaire^1,5^, Amelia Y. Peardon ^1^, Daniel W.A. Noble^1^
+Pablo Recio^1^,$\ddagger$ , Dalton C. Leibold^1^, Ondi L. Crino ^1,2^, Kristoffer H. Wild^1,3^, Chris Friesen^4^, Basile Mauclaire^1,5^, Amelia Y. Peardon ^1^, Daniel W.A. Noble^1^
 
 ^1^ Division of Ecology and Evolution, Research School of Biology, The Australian National University, Canberra, ACT 2601, Australia  
 ^2^ Flinder's University, College of Science and Engineering, Bedford Park, SA 5042, Australia  
