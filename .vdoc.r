@@ -74,13 +74,6 @@ pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4,
 #
 #
 #
-#
-#
-#
-#
-#
-#
-#
 #| label: fig-Methods
 #| fig.cap: "Experimental design of early environment manipulation and learning tasks. Panel A represents the early environment manipulation for both species. Panel B shows the habituation phase with the respective three different stages. And panel C represents the associative and reversal tasks; white lids show the ramps where the food reward was not accessible."
 
@@ -128,10 +121,10 @@ for(i in 1:length(specie)){
 source(here("R", "func.R"))
 # Model formula: FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id) + (1|clutch)
 ## A) L. delicata
-deli <- fit_m(clean_df, "deli", "complete",  refit = FALSE)
+deli <- fit_m(clean_df, "deli", "complete",  refit = TRUE)
 write.csv(deli, file= "./output/Checking/deli.csv")
 ## B) L. guichenoti
-guich <- fit_m(clean_df, "guich", "complete", refit = FALSE)
+guich <- fit_m(clean_df, "guich", "complete", refit = TRUE)
 write.csv(guich, file= "./output/Checking/guich.csv")
 #
 #
@@ -410,10 +403,10 @@ for(i in 1:length(specie)){
 source(here("R", "func.R"))
 # Model formula: FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id) + (1|clutch)
 ## A) L. delicata
-deli_2 <- fit_m(clean_df_2, "deli", "suppl", refit = TRUE)
+deli_2 <- fit_m(clean_df_2, "deli", "suppl", refit = FALSE)
 write.csv(deli_2, file= "./output/Checking/deli.csv")
 ## B) L. guichenoti
-guich_2 <- fit_m(clean_df_2, "guich", "suppl", refit = TRUE)
+guich_2 <- fit_m(clean_df_2, "guich", "suppl", refit = FALSE)
 write.csv(guich_2, file= "./output/Checking/guich.csv")
 #
 #
