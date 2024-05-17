@@ -32,7 +32,7 @@ sample <- function(df, sp, corti, therm){
 #' @param refit To choose whether to refit the models (TRUE, default) or use the ones already made (FALSE)
 #' @return Raw posteriors of fitted brm model for each treatment, species, and group (df)
 fit_m <- function(df, sp, com, refit = TRUE) {
-  formula <- (FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)) 
+  formula <- (FC_reversal ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id) + (1|clutch)) 
   #Specify species
     if (sp == "deli"){
       sp_data <- df %>%
