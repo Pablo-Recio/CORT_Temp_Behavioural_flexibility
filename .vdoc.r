@@ -69,11 +69,14 @@ pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4,
 #
 #
 #
+#
+#
 #| label: fig-Methods
 #| fig.cap: "Experimental design of early environment manipulation and learning tasks. Panel A represents the early environment manipulation for both species. Panel B shows the habituation phase with the respective three different stages. And panel C represents the associative and reversal tasks; white lids show the ramps where the food reward was not accessible."
 
 knitr::include_graphics("./Others/BEHFLEX_FIG_1.png")
 
+#
 #
 #
 #
@@ -218,42 +221,6 @@ cat("\\newpage")
 #
 #
 #
-#
-#
-#
-#
-# Chunk for calling all the models and making the residuals
-## L. delicata
-mod_deli <- readRDS(here("output/models/delicomplete.rds"))
-resid_deli <- residuals(mod_deli)
-## L. guichenoti
-mod_guich <- readRDS(here("output/models/guichcomplete.rds"))
-resid_guich <- residuals(mod_guich)
-#
-#
-#
-#
-#
-#
-#
-#
-#
-bayes_R2(mod_deli)
-plot(mod_deli)
-#
-#
-#
-cat("\\newpage")
-#
-#
-#
-#
-bayes_R2(mod_guich)
-plot(mod_guich)
-#
-#
-#
-cat("\\newpage")
 #
 #
 #
@@ -518,6 +485,96 @@ cat("\\newpage")
 #
 #
 #
+#| label: fig_rawdata
+#| fig.cap: "Raw data for the reversal tasks for both species. Lines represent the mean proportion of correct choices per trial for each treatment."
+#
+# Load the data
+data_raw <- clean_df %>%
+  mutate(trt = factor(trt, 
+          levels = c("A_23", "B_23", "A_28", "B_28"), 
+          labels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")),
+        species = factor(species,
+          levels = c("delicata", "guichenoti"),
+          labels = c("italic('L. delicata')", "italic('L. guichenoti')"))) %>%
+data.frame()
+#
+# Plot the raw data for the reversal tasks for both species
+plot_raw <- ggplot(data_raw, aes(x = trial_reversal, y = FC_reversal, color = trt, fill = trt)) +
+  geom_smooth(method = "loess", linewidth = 1, alpha = 0.1) +
+  scale_color_manual(values = c("darkblue", "#68bde1", "#b50101", "#fa927d")) +
+  scale_fill_manual(values = c("darkblue", "#68bde1", "#b50101", "#fa927d")) +
+  facet_wrap(~species, nrow = 1, labeller = label_parsed) +
+  labs(x = "Trial", y = "Proportion of correct choices", color = "Treatments", fill = "Treatments") +
+  theme_classic()
+#
+# Save the plot
+ggsave("./output/figures/plot_raw.png", plot=plot_raw, width = 25, height = 18, units = "cm", dpi = 600)
+knitr::include_graphics("./output/figures/plot_raw.png")
+#
+#
+#
+cat("\\newpage")
+#
+#
+#
+#
+#| label: standard_crit
+#| tbl-cap: "Number of individuals per treatment and species that reached a learning criterium of 5 consecutive correct choices (n lizards), and the average of trials taken (Trial) together with the standard deviation (sd)."
+#
+source(here("R", "func.R"))
+# Load the data
+scrit_df <- clean_df %>%
+  group_by(lizard_id,species, trt) %>%
+  mutate(
+    run_id = cumsum(lag(FC_reversal, default = 0) == 0 & FC_reversal == 1),
+    run_length = ave(FC_reversal , run_id, FUN = cumsum) * FC_reversal 
+  ) %>%
+  filter(run_length >= 5) %>%
+  group_by(lizard_id, species, trt) %>%
+  slice_min(trial_reversal) %>%  # Get the first trial when the criterion was met
+  summarize(
+    species = first(species),
+    trt = first(trt),
+    trial_crit = min(trial_reversal),
+    .groups = "drop") %>%
+  mutate(trt = factor(trt, 
+          levels = c("A_23", "B_23", "A_28", "B_28"), 
+          labels = c("Control-Cold", "CORT-Cold", "Control-Hot", "CORT-Hot")),
+        species = factor(species,
+          levels = c("delicata", "guichenoti"),
+          labels = c("L. delicata", "L. guichenoti")))%>%
+  group_by(species, trt) %>%
+  summarize(
+    n = n(),
+    mean_trial = format_dec(mean(trial_crit),2),
+    des_trial = format_dec(sd(trial_crit),2),
+    .groups = "drop") %>%
+data.frame()
+#
+# Create the table
+crit_tbl <- flextable(scrit_df) %>%
+  set_table_properties(width = 1) %>%
+  align(align = "center", part = "all") %>%
+  fontsize(size = 10, part = "all") %>%
+  set_header_labels(species = "Specie",
+                    trt = "Treatment",
+                    n = "n lizards",
+                    mean_trial = "Mean",
+                    des_trial = "sd") %>%
+    italic(i = c(1,5), j = 1, italic = TRUE, part = "body") %>% # To have names od species in italics
+    flextable::compose(i = c(2:4,6:8), j = 1, value = as_paragraph(""), part = "body") %>% # To remove some of the values in the first column
+    hline(i = 4, j = c(1:5), part = "body") %>% # To make some horizontal lines
+    autofit()
+crit_tbl
+#
+#
+#
+cat("\\newpage")
+#
+#
+#
+#
+#
 #
 #
 #
@@ -651,6 +708,44 @@ plot_age_guich <- data_age %>%
 plot_age <- plot_grid(plot_age_deli, plot_age_guich, ncol = 1)
 ggsave("./output/figures/plot_age.png", plot=plot_age, width = 25, height = 18, units = "cm", dpi = 600)
 knitr::include_graphics("./output/figures/plot_age.png")
+#
+#
+#
+cat("\\newpage")
+#
+#
+#
+#
+#
+# Chunk for calling all the models and making the residuals
+## L. delicata
+mod_deli <- readRDS(here("output/models/delicomplete.rds"))
+resid_deli <- residuals(mod_deli)
+## L. guichenoti
+mod_guich <- readRDS(here("output/models/guichcomplete.rds"))
+resid_guich <- residuals(mod_guich)
+#
+#
+#
+#
+#
+#
+#
+#
+#
+bayes_R2(mod_deli)
+plot(mod_deli)
+#
+#
+#
+cat("\\newpage")
+#
+#
+#
+#
+bayes_R2(mod_guich)
+plot(mod_guich)
+#
 #
 #
 #
