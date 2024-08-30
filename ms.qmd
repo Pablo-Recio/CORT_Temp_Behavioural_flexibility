@@ -226,7 +226,7 @@ cat("\\newpage")
 # Suplementary Material
 
 #### Estimates of reversal learning slopes for all the different treatments per each task, specie, and group.
-Table 1. Estimates of Reversal learning slope for all the different treatments per each task, specie, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05).
+Table 1. Estimates of Reversal learning slope for all the different treatments per each task, specie, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (p~mcmc~ <0.05).
 ```{r, tbl-data, results='asis'}
 #| label: tbl-data
 #| tbl-cap: "Estimates of Reversal learning slope for all the different treatments per each task, species, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05)"
