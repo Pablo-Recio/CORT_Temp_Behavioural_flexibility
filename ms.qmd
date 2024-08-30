@@ -225,6 +225,7 @@ cat("\\newpage")
 
 # Suplementary Material
 
+#### Estimates of reversal learning slopes for all the different treatments per each task, specie, and group.
 Table 1. Estimates of Reversal learning slope for all the different treatments per each task, specie, and group. Mean shows the arithmetic means of the estimates obtained from the posteriors of the model, and 95% CI indicates the 95% confidence interval of the mean. All pmcmc tested the hypothesis that the mean equals zero. In bold, those values that are significant (pmcmc <0.05).
 ```{r, tbl-data, results='asis'}
 #| label: tbl-data
@@ -485,7 +486,7 @@ real_table_2
 cat("\\newpage")
 ```
 
-Figures with raw data
+#### Figures with raw data
 
 ```{r, fig_rawdata}
 #| label: fig_rawdata
@@ -519,6 +520,7 @@ knitr::include_graphics("./output/figures/plot_raw.png")
 cat("\\newpage")
 ```
 
+#### Results using a standard learning criterion of 5 consecutive correct choices  
 Table 3. Number of individuals per treatment and species that reached a learning criterium of 5 consecutive correct choices (n lizards), and the average of trials taken (Trial) together with the standard deviation (sd).  
 ```{r, tbl-standard_crit, results='asis', out.widht = "26cm"}
 #| label: standard_crit
@@ -575,7 +577,44 @@ crit_tbl
 cat("\\newpage")
 ```
 
-Checking the effect of age on the learning rate in the associative task.
+#### Checking the main models plots  
+
+```{r, residuals}
+# Chunk for calling all the models and making the residuals
+## L. delicata
+mod_deli <- readRDS(here("output/models/delicomplete.rds"))
+resid_deli <- residuals(mod_deli)
+## L. guichenoti
+mod_guich <- readRDS(here("output/models/guichcomplete.rds"))
+resid_guich <- residuals(mod_guich)
+```
+
+Model formula for the reversal task is:  
+
+Choice  ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)  
+
+Plots for the different models of the reversal task:  
+1.- _L. delicata_    
+```{r , plotmod_drr, out.width="70%", fig.align="center"}
+bayes_R2(mod_deli)
+plot(mod_deli)
+```
+
+```{r, results='asis', echo=FALSE}
+cat("\\newpage")
+```
+
+2.- _L. guichenoti_  
+```{r , plotmod_grr, out.width="70%", fig.align="center"}
+bayes_R2(mod_guich)
+plot(mod_guich)
+```
+
+```{r, results='asis', echo=FALSE}
+cat("\\newpage")
+```
+
+#### Checking the effect of age on the learning rate in the associative task.
 
 Model formula: 
 Choice ~ age.start + trial_associative * cort * temp + (1 + trial_associative|lizard_id) + (1|clutch)
@@ -712,41 +751,3 @@ plot_age <- plot_grid(plot_age_deli, plot_age_guich, ncol = 1)
 ggsave("./output/figures/plot_age.png", plot=plot_age, width = 25, height = 18, units = "cm", dpi = 600)
 knitr::include_graphics("./output/figures/plot_age.png")
 ```
-
-```{r, results='asis', echo=FALSE}
-cat("\\newpage")
-```
-
-#### Checking the main models plots  
-
-```{r, residuals}
-# Chunk for calling all the models and making the residuals
-## L. delicata
-mod_deli <- readRDS(here("output/models/delicomplete.rds"))
-resid_deli <- residuals(mod_deli)
-## L. guichenoti
-mod_guich <- readRDS(here("output/models/guichcomplete.rds"))
-resid_guich <- residuals(mod_guich)
-```
-
-Model formula for the reversal task is:  
-
-Choice  ~ trial_reversal*cort*temp + (1 + trial_reversal|lizard_id)  
-
-Plots for the different models of the associative task:  
-1.- _L. delicata_    
-```{r , plotmod_drr, out.width="70%", fig.align="center"}
-bayes_R2(mod_deli)
-plot(mod_deli)
-```
-
-```{r, results='asis', echo=FALSE}
-cat("\\newpage")
-```
-
-2.- _L. guichenoti_  
-```{r , plotmod_grr, out.width="70%", fig.align="center"}
-bayes_R2(mod_guich)
-plot(mod_guich)
-```
-
