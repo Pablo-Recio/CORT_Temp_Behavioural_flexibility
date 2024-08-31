@@ -490,24 +490,34 @@ cat("\\newpage")
 
 ```{r, fig_rawdata}
 #| label: fig_rawdata
-#| fig.cap: "Raw data for the reversal tasks for both species. Lines represent the mean proportion of correct choices per trial for each treatment."
+#| fig.cap: "Probability of choosing correctly over trials for each of the treatments and species. The dots represent the proportion of individuals per trial that chose correctly while the lines show the mean predicted probability of choosing correctly, estimated using the posteriors of our model."
 #
 # Load the data
 data_raw <- clean_df %>%
+  group_by(species, trt, trial_reversal) %>%
+  summarize(prop_correct = mean(FC_reversal, na.rm = TRUE)) %>%
   mutate(trt = factor(trt, 
           levels = c("A_23", "B_23", "A_28", "B_28"), 
           labels = c("CORT-Cold", "Control-Cold", "CORT-Hot", "Control-Hot")),
         species = factor(species,
           levels = c("delicata", "guichenoti"),
           labels = c("italic('L. delicata')", "italic('L. guichenoti')"))) %>%
+  rename(Trial = trial_reversal,
+         Treatment = trt) %>%
 data.frame()
 #
-# Plot the raw data for the reversal tasks for both species
-plot_raw <- ggplot(data_raw, aes(x = trial_reversal, y = FC_reversal, color = trt, fill = trt)) +
-  geom_smooth(method = "loess", linewidth = 1, alpha = 0.1) +
+# Get the df for the predicted prob
+df_deliprob$species <- "italic('L. delicata')"
+df_guichprob$species <- "italic('L. guichenoti')"
+df_combined <- rbind(df_deliprob, df_guichprob)
+df_all <- full_join(df_combined, data_raw, by = c("Trial", "Treatment", "species"))
+# Plot the raw data for the reversal tasks for both species with the predicted prob
+plot_raw <- ggplot(data = df_all, aes(x = Trial, y = Mean_Predicted_prob, color = Treatment, fill = Treatment)) +
+  geom_smooth(linewidth = 1) +
+  geom_point(data = df_all, aes(x = Trial, y = prop_correct, color = Treatment, fill = Treatment)) +
   scale_color_manual(values = c("darkblue", "#68bde1", "#b50101", "#fa927d")) +
   scale_fill_manual(values = c("darkblue", "#68bde1", "#b50101", "#fa927d")) +
-  facet_wrap(~species, nrow = 1, labeller = label_parsed) +
+  facet_grid(species ~ Treatment, labeller = label_parsed, switch = "y") +
   labs(x = "Trial", y = "Proportion of correct choices", color = "Treatments", fill = "Treatments") +
   theme_classic()
 #
