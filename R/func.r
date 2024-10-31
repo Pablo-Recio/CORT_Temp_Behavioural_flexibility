@@ -284,13 +284,15 @@ df_plotBD2 <- function(sp){
 plotting <- function(sp, df_prob, df_violin, df_points){
   # Specify labels depending on species and relevel the factor treatment for the legend
   if(sp == "deli"){
-    lab <- c("A", "B")
+    lab1 <- "(a)"
+    lab2 <- "(b)"
     df_violin$Treatment <- factor(df_violin$Treatment,
       levels = c("Control-Hot (n =  12 )", "CORT-Hot (n =  12 )", "Control-Cold (n = 12 )", "CORT-Cold (n = 11 )"))
     img <- readPNG("./Others/Deli.png")
     note <- paste("L. delicata")
   } else if (sp == "guich"){
-    lab <- c("C", "D")
+    lab1 <- "(c)"
+    lab2 <- "(d)"
     df_violin$Treatment <- factor(df_violin$Treatment,
       levels = c("Control-Hot (n =  10 )", "CORT-Hot (n =  10 )", "Control-Cold (n = 7 )", "CORT-Cold (n = 10 )"))
     img <- readPNG("./Others/Guich.png")
@@ -311,7 +313,8 @@ plotting <- function(sp, df_prob, df_violin, df_points){
     axis.title = element_text(size = 12, family = "Times"),
     axis.text = element_text(size = 10, family = "Times"),
     legend.position = "none"
-  ) 
+  ) + 
+  annotate("text", x = 2, y = 0.88, label = lab1, size = 5.5, hjust = 0.5, vjust = 1)
   #
   # Second part of the plot (B, D), the slope estimates of each treatment
   plot2 <- ggplot(df_violin, aes(x = Treatment, y = Value, fill = Treatment)) +
@@ -320,7 +323,7 @@ plotting <- function(sp, df_prob, df_violin, df_points){
   geom_point(data = df_points, aes(y = Mean, x = Treatment), position = position_dodge(width = 0.75), color = "black", fill = "black", size = 3) +
   geom_segment(data = df_points, aes(y = Mean - SD, yend = Mean + SD, x = Treatment, xend = Treatment), size = 1.5, color = "black") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-  ylim(-0.015, max(df_violin$Value)) +
+  ylim(-0.025, max(df_violin$Value)) +
   coord_flip() +
   theme_classic() +
   labs(y = "Slope estimates", x = "Treatments") +
@@ -331,10 +334,11 @@ plotting <- function(sp, df_prob, df_violin, df_points){
     legend.position = "right",
     legend.title = element_text(size = 12, family = "Times"),
     legend.text = element_text(size = 11, family = "Times")
-    )
+    ) +
+  annotate("text", x = 4.35, y = -0.015, label = lab2, size = 5.5, hjust = 0.5, vjust = 1)
   #
   # Combine them
-  plot <- plot_grid(plot1, plot2, labels = lab, nrow = 1, rel_widths = c(0.45, 0.45)) +
+  plot <- plot_grid(plot1, plot2, nrow = 1, rel_widths = c(0.45, 0.45)) +
     annotation_custom(rasterGrob(img), xmin = 0.73, xmax = 0.98, ymin = 0.73, ymax = 0.98) +
     annotate("text", x = 0.5, y = 0.05, label = note, size = 5, color = "black", fontface = "italic")
   return(plot)
