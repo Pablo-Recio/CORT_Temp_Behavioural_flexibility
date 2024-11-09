@@ -121,6 +121,12 @@ for(i in 1:length(specie)){
       }
     }
   }
+
+a <- n_list$delicata_CORT_Cold + n_list$delicata_CORT_Hot + n_list$delicata_Control_Cold + n_list$delicata_Control_Hot + n_list$guichenoti_CORT_Cold + n_list$guichenoti_CORT_Hot + n_list$guichenoti_Control_Cold + n_list$guichenoti_Control_Hot
+
+n_list_2 <- list()
+#
+b <- unique(data$lizard_id)
 ```
 
 ```{r, countclutches}
@@ -132,7 +138,7 @@ deli_clutches <- clean_df %>% filter(species == "delicata") %>% distinct(clutch)
 guich_clutches <- clean_df %>% filter(species == "guichenoti") %>% distinct(clutch) %>% nrow()
 ```
 
-We started with 96 lizards, 48 per species and 12 per treatment per species. However, our final sample size was 81 due to natural mortality (n = 11), failure to complete the training stage (n = 1), or because the number of failed tasks (see above) was higher than 15 (n = 3). The final sample sizes per treatment and species are listed in @fig-results. These animals came from a total of `r deli_clutches` clutches in _L. delicata_ and `r guich_clutches` in _L. guichenoti_.  
+We started with 96 lizards, 48 per species and 12 per treatment per species. However, our final sample size was 84 due to natural mortality (n = 11), failure to complete the training stage (n = 1), or because the number of failed tasks (see above) was higher than 15 (n = 0). The final sample sizes per treatment and species are listed in @fig-results. These animals came from a total of `r deli_clutches` clutches in _L. delicata_ and `r guich_clutches` in _L. guichenoti_.  
 
 ```{r, models}
 #| label: models
@@ -520,8 +526,8 @@ cat("\\newpage")
 
 #### Figures with raw data
 
-```{r, fig_rawdata}
-#| label: fig_rawdata
+```{r, fig-rawdata}
+#| label: fig-rawdata
 #| fig.cap: "Probability of choosing correctly over trials for each of the treatments and species. The dots represent the proportion of individuals per trial that chose correctly while the lines show the mean predicted probability of choosing correctly, estimated using the posteriors of our model."
 #
 # Load the data
