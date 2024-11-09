@@ -138,7 +138,7 @@ deli_clutches <- clean_df %>% filter(species == "delicata") %>% distinct(clutch)
 guich_clutches <- clean_df %>% filter(species == "guichenoti") %>% distinct(clutch) %>% nrow()
 ```
 
-We started with 96 lizards, 48 per species and 12 per treatment per species. However, our final sample size was 84 due to natural mortality (n = 11), failure to complete the training stage (n = 1), or because the number of failed tasks (see above) was higher than 15 (n = 0). The final sample sizes per treatment and species are listed in @fig-results. These animals came from a total of `r deli_clutches` clutches in _L. delicata_ and `r guich_clutches` in _L. guichenoti_.  
+We started with 96 lizards, 48 per species and 12 per treatment per species. However, our final sample size was 81 due to natural mortality (n = 11), failure to complete the training stage (n = 1), or because the number of failed tasks (see above) was higher than 15 (n = 3). The final sample sizes per treatment and species are listed in @fig-results. These animals came from a total of `r deli_clutches` clutches in _L. delicata_ and `r guich_clutches` in _L. guichenoti_.  
 
 ```{r, models}
 #| label: models
