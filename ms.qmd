@@ -28,9 +28,9 @@ pacman::p_load(tidyverse, flextable, emmeans, DHARMa, brms, here, ggplot2, lme4,
 Pablo Recio^1^,$\ddagger$ , Dalton C. Leibold^1^, Ondi L. Crino ^1,2^, Kristoffer H. Wild^1,3^, Chris Friesen^4^, Basile Mauclaire^1,5^, Amelia Y. Peardon ^1^, Daniel W.A. Noble^1^
 
 ^1^ Division of Ecology and Evolution, Research School of Biology, The Australian National University, Canberra, ACT 2601, Australia  
-^2^ Flinder's University, College of Science and Engineering, Bedford Park, SA 5042, Australia  
-^3^ Melbourne University, Melbourne, VIC 3000, Australia  
-^4^ University of Wollongong, Wollongong, NSW 2500, Australia  
+^2^ College of Science and Engineering, Flinders University, Bedford Park, SA 5001, Australia  
+^3^ School of BioSciences, The University of Melbourne, Melbourne, VIC 3000, Australia  
+^4^ School of Science, University of Wollongong, Wollongong, NSW 2500, Australia  
 ^5^ Université de Lille, Lille 59000, France  
 $\ddagger$ Corresponding author: pablo.reciosantiago@anu.edu.au  
 
@@ -46,7 +46,7 @@ Behavioural flexibility describes the ability of individuals to adjust behaviour
 
 The conditions in which organisms develop can be altered by the circumstances faced by their parents. For instance, exposing three-spined stickleback (_Gasterosteus aculeatus_) females to a model predator during ovulation, affected their offspring's tendency to use social cues [@feng2015effect]. Under stressful situations, animal sensory systems detect and transmit environmental signals to instigate adaptive physiological and behavioural adjustments – responses that are mediated by glucocorticoids (GCs) [@sapolsky_how_2000]. Glucocorticoids can be transmitted to offspring and influence their phenotype and development through transgenerational effects [@Crino_2023]. In addition to the environments experienced by parents, offspring also experience potentially stressful environmental conditions that can interact with or amplify parental effects. For example, human disturbance alters snapping turtles' nest-site choice, ultimately impacting the temperature at which eggs are incubated [@kolbe2002impact]. Animals’ responses to abrupt temperature changes are mediated by GCs [@Crino_2023], which can influence animals’ decision-making while nesting [@kolbe2002impact]. As a result, GCs transmission and early thermal environment are expected to interact and shape offspring traits. Both GCs and temperature are known to exert potent effects on brain development [@jonson1976effect; @coomber_independent_1997; @zhu_prenatal_2004; @amiel_effects_2017] and cognition [@clark_colour_2014; @lui2017chronic], but little is known about how they may interact to affect behavioural flexibility. Since behaving flexibly is essential for dealing with novel environments, understanding how early developmental environments collectively impact cognition is crucial for predicting the consequences of environmental change.  
 
-Here, we studied the effects of prenatal temperature and corticosterone (CORT) (the main GC in reptiles) [@Crino_2023], on behavioural flexibility in two species of reptiles, the delicate skink (_Lampropholis delicata_) and the common garden skink (_L. guichenoti_). Both species have similar life-histories and overlapping distributions [@chapple_know_2011; @chapple_biology_2014], but only _Lampropholis delicata_ has been successful in colonising different areas around the globe [@baker1979rainbow; @chapple2013divergent; @chapple2015deliinvLHI]. Previous studies exploring behavioural differences between the two species have found _L. delicata_ to be more exploratory than _L. guichenoti_ [@chapple_know_2011], but no differences in learning were observed between the skinks in an associative learning task [@bezzina2014does]. Disparities in behavioural flexibility may be driving the differences in invasion success between both skinks, a prediction supported in other invasive species [@sol2000behavioural; @sol2008brain; @wright2010behavioral; @amiel_smart_2011; @chapple2012can]. However, the relative impact of early environments on behavioural flexibility remains unexplored. Early environments are known to affect suites of morphological and behavioural traits differently in each species [@carrasco2023maternal; @kar2023heritability]. We manipulated CORT and incubation temperature in both species and then subjected hatchlings to a reversal learning task. Reversal learning is a widely employed tool to measure behavioural flexibility [@gapp2014early; @hurtubise2017effects], as it assesses an individual's ability to reverse a previously learnt behaviour providing researchers with a clear indicator of their ability to adjust to new conditions [@brown2010behavioral].    
+Here, we studied the effects of prenatal temperature and corticosterone (CORT) (the main GC in reptiles) [@Crino_2023], on behavioural flexibility in two species of reptiles, the delicate skink (_Lampropholis delicata_) and the common garden skink (_L. guichenoti_). Both species have similar life-histories and overlapping distributions [@chapple_know_2011; @chapple2015deliinvLHI], but only _Lampropholis delicata_ has been successful in colonising different areas around the globe [@baker1979rainbow; @chapple2013divergent; @chapple2015deliinvLHI]. Previous studies exploring behavioural differences between the two species have found _L. delicata_ to be more exploratory than _L. guichenoti_ [@chapple_know_2011], but no differences in learning were observed between the skinks in an associative learning task [@bezzina2014does]. Disparities in behavioural flexibility may be driving the differences in invasion success between both skinks, a prediction supported in other invasive species [@sol2000behavioural; @sol2008brain; @wright2010behavioral; @amiel_smart_2011; @chapple2012can]. However, the relative impact of early environments on behavioural flexibility remains unexplored. Early environments are known to affect suites of morphological and behavioural traits differently in each species [@carrasco2023maternal; @kar2023heritability]. We manipulated CORT and incubation temperature in both species and then subjected hatchlings to a reversal learning task. Reversal learning is a widely employed tool to measure behavioural flexibility [@gapp2014early; @hurtubise2017effects], as it assesses an individual's ability to reverse a previously learnt behaviour providing researchers with a clear indicator of their ability to adjust to new conditions [@brown2010behavioral].    
 
 We predicted that both cold incubation temperatures and CORT treatment will impair behavioural flexibility [@clark_colour_2014; @lui2017chronic], and the combination of both treatments to have the most detrimental effect on behavioural flexibility. Since invasive species are expected to behave more flexibly [@sol2000behavioural; @sol2008brain; @wright2010behavioral; @amiel_smart_2011; @chapple2012can], we predicted that _L. delicata_, on average, will perform more proficiently in the task compared to _L. guichenoti_ and that behavioural flexibility in _L. delicata_ will be more robust to early environmental conditions.      
 
@@ -84,7 +84,7 @@ knitr::include_graphics("./Others/BEHFLEX_FIG_1.png")
 ```
 
 #### Statistical analyses  
-We performed the analyses for each species separately. We fitted two different Bayesian multilevel models using the brm function from the _brms_ package [@burkner2017brms] using an R extension (version 2.8.2) [@R]. We ran four parallel MCMC chains of 3000 iterations for each model, with a warmup period of 1000 iterations. We modelled correct choices [correct (1) or not (0)] as the response variable, and trial, hormone (CORT versus Control), incubation temperature (Cold versus Hot), along with the three-way interaction between trial, hormone, and temperature. If early environments impact learning then we would predict that the rate of learning (i.e., trial slope) varies by treatment as captured by the interactions. The error structure was modelled using a Bernoulli distribution with a logit link function (family = Bernoulli(link = 'logit')). We included a random intercept and slope (trial) for each lizard in our models. We also incorporated the clutch identity as a random factor. _L. delicata_ lays one clutch per year, while _L. guichenoti_ lays two [@chapple_know_2011; @chapple_biology_2014]. Since eggs were collected during half of the breeding season, clutches likely come from different mothers. Additionally, previous research has shown that clutches are generally sired by a single male, but sperm storage can occur [@kar2023heritability]. Given our partial split-clutch design, and the fact that maternal effects are expected to be stronger than paternal effects in these species, including the clutch as a random factor should account for the effects of parental identity.   
+We performed the analyses for each species separately. We fitted two different Bayesian multilevel models using the brm function from the _brms_ package [@burkner2017brms] using an R extension (version 2.8.2) [@R]. We ran four parallel MCMC chains of 3000 iterations for each model, with a warmup period of 1000 iterations. We modelled correct choices [correct (1) or not (0)] as the response variable, and trial, hormone (CORT versus Control), incubation temperature (Cold versus Hot), along with the three-way interaction between trial, hormone, and temperature. If early environments impact learning then we would predict that the rate of learning (i.e., trial slope) varies by treatment as captured by the interactions. The error structure was modelled using a Bernoulli distribution with a logit link function (family = Bernoulli(link = 'logit')). We included a random intercept and slope (trial) for each lizard in our models. We also incorporated the clutch identity as a random factor. _L. delicata_ lays one clutch per year, while _L. guichenoti_ lays two [@chapple_know_2011; @chapple2015deliinvLHI]. Since eggs were collected during half of the breeding season, clutches likely come from different mothers. Additionally, previous research has shown that clutches are generally sired by a single male, but sperm storage can occur [@kar2023heritability]. Given our partial split-clutch design, and the fact that maternal effects are expected to be stronger than paternal effects in these species, including the clutch as a random factor should account for the effects of parental identity.   
 
 Learning can also be age-dependent [see @noble_age-dependent_2014], and given that lizards incubated at different temperatures hatch at different times we explored the effects of age on learning. Indeed, lizards’ age at the beginning of the experiment ranged from 41 to 148 days old in _L. delicata_ and 48 to 132 in _L. guichenoti_. However, when this variable was included in the models we did not find any significant effect of age (see Supplementary Material). As such, we present models without age as a fixed effect.  
 
@@ -560,8 +560,8 @@ plot_raw <- ggplot(data = df_all, aes(x = Trial, y = Mean_Predicted_prob, color 
   theme_classic()
 #
 # Save the plot
-ggsave("./output/figures/plot_raw.png", plot=plot_raw, width = 25, height = 18, units = "cm", dpi = 600)
-knitr::include_graphics("./output/figures/plot_raw.png")
+ggsave("./output/Figs_supplementary/Figure_S1.png", plot=plot_raw, width = 25, height = 18, units = "cm", dpi = 600)
+knitr::include_graphics("./output/Figs_supplementary/Figure_S1.png")
 ```
 
 ```{r, results='asis', echo=FALSE}
@@ -645,7 +645,15 @@ Plots for the different models of the reversal task:
 1.- _L. delicata_    
 ```{r , plotmod_drr, out.width="70%", fig.align="center"}
 bayes_R2(mod_deli)
-plot(mod_deli)
+plot_mod_deli_list <- plot(mod_deli)
+#
+plot_mod_deli_1 <- plot_mod_deli_list[[1]]
+plot_mod_deli_2 <- plot_mod_deli_list[[2]]
+plot_mod_deli_3 <- plot_mod_deli_list[[3]]
+#
+plot_mod_deli <- plot_grid(plot_mod_deli_1, plot_mod_deli_2, plot_mod_deli_3, ncol = 1)
+ggsave("./output/Figs_supplementary/Figure_S2.png", plot=plot_mod_deli, width = 20, height = 35, units = "cm", dpi = 600, bg = "white")
+knitr::include_graphics("./output/Figs_supplementary/Figure_S2.png")
 ```
 
 ```{r, results='asis', echo=FALSE}
@@ -655,7 +663,15 @@ cat("\\newpage")
 2.- _L. guichenoti_  
 ```{r , plotmod_grr, out.width="70%", fig.align="center"}
 bayes_R2(mod_guich)
-plot(mod_guich)
+plot_mod_guich_list <- plot(mod_guich)
+#
+plot_mod_guich_1 <- plot_mod_guich_list[[1]]
+plot_mod_guich_2 <- plot_mod_guich_list[[2]]
+plot_mod_guich_3 <- plot_mod_guich_list[[3]]
+#
+plot_mod_guich <- plot_grid(plot_mod_guich_1, plot_mod_guich_2, plot_mod_guich_3, ncol = 1)
+ggsave("./output/Figs_supplementary/Figure_S3.png", plot=plot_mod_guich, width = 20, height = 35, units = "cm", dpi = 600, bg = "white")
+knitr::include_graphics("./output/Figs_supplementary/Figure_S3.png")
 ```
 
 ```{r, results='asis', echo=FALSE}
@@ -796,6 +812,6 @@ plot_age_guich <- data_age %>%
   annotation_custom(rasterGrob(img_guich), xmin = 0.73, xmax = 0.98, ymin = 0.73, ymax = 0.98)
 #
 plot_age <- plot_grid(plot_age_deli, plot_age_guich, ncol = 1)
-ggsave("./output/figures/plot_age.png", plot=plot_age, width = 25, height = 18, units = "cm", dpi = 600)
-knitr::include_graphics("./output/figures/plot_age.png")
+ggsave("./output/Figs_supplementary/Figure_S4.png", plot=plot_age, width = 25, height = 18, units = "cm", dpi = 600)
+knitr::include_graphics("./output/Figs_supplementary/Figure_S4.png")
 ```
